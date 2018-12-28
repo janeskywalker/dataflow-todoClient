@@ -2,10 +2,14 @@
 <html>
     <head>
       <style>
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
   
         body {
-          background-color: #1d2126;
-          color: white;
+          background-color: #eee;
+          color: #666;
         }
   
         li.checked {
@@ -14,38 +18,63 @@
         }
   
         ul.completed li:not(.checked) {
-          display: none
+          display: none;
         }
   
         ul.active li.checked {
-          display: none
+          display: none;
+        }
+
+        div.error-widget {
+            display: none;
+        }
+
+        div.error-widget.active {
+            display: block;
+        }
+
+        .block {
+            background: #999;
+            padding: 10px;
+        }
+
+        .inline {
+            background: pink;
         }
   
   
       </style>
     </head>
+
     <body> 
-  
+
     <h1>todos</h1>
 
-    
-  
+    <div class="block">
+        <span class="inline">inline</span>
+    </div>
+
     <input id='item-input' class='item-input'>
 
-    <div id='display-error'></div>
-  
+    <div id='save-error' class='error-widget'>
+        <span class='error-text'>Failed to save data, do you want to retry?</span>
+        <button class='confirm-btn'>Try Again</button>
+    </div>
+
+
+
+
+
+
+
     <ul id='item-list' class='item-list'></ul>
-  
+
     <div id='item-left'></div>item left
 
-    
-
-
-  
     <button id='button-show-all' class='button-show-all'>All</button>
     <button id='button-show-active' class='button-show-active'>Active</button>
     <button id='button-completed' class='button-completed'>Completed</button>
-  
+
     <button id='button-clear-completed' class='button-clear-completed'>Clear completed</button> 
   
   
@@ -56,11 +85,22 @@
 
 
             const state = {
-                error: null,
+                error: {
+                    type: 'None',
+                    data: null,
+                },
                 todos: []
             }
 
             
+            // const listeners = [
+
+            // ]
+
+            // addEvent(event, callback)
+
+            // element.addEventListener('click', () => {})
+
 
             /*
 
@@ -127,17 +167,32 @@
 
             function displayError(error) {
                 const errorDisplay = document.getElementById('display-error')
-                errorDisplay.innerHTML = error
+                // when only changing test use 'innerText'
+                // 'innerHTML' is unsafe
+                errorDisplay.innerText = error
             }
         
 
-           
+           // 1. add default retry polity
+           // 2. add default method
 
             // this is to create a closure to create a variable and a real callback function 
             function ajax(options) {
                 let count = 0
                 // let elapsedTime = 0 //Don't use this one
                 let startTime = Date.now() //use this one
+
+                // const defaultPolicy = {
+                //     maxRetries: 5,
+                //     waitTime: 1000, 
+                //     timeout: 10000
+                // }
+
+                // const defaultMethod = 'GET'
+
+                // const method = options.method || defaultMethod
+                // const retryPolicy = options.retryPolicy || defaultPolicy
+
                 // this real one does the job, same name 
                 function _ajax() {
                 // function _ajax(options) {    
@@ -207,16 +262,16 @@
                 return _ajax()
             }
 
-
+            // model -> render -> action -> update -> render -> action -> update -> render
 
 
             function updateData(how, state, data) {
                 console.log('how: ', how)
                 console.log('state: ', state)
                 // call post
-                if(how === 'addItem') {
+                if (how === 'addItem') {
                 
-                    var newTodo = {
+                    const newTodo = {
                         id: null,
                         name: data.item, 
                         completed: false
@@ -228,12 +283,12 @@
                    
                    
                     // add it to the server side state.todos
-                    var promiseAdd = ajax({
+                    const promiseAdd = ajax({
                         url: 'http://localhost:4000/api/todos',
                         method: 'POST',
                         data: newTodo,
                         retryPolicy: {
-                            maxRetries: 3,
+                            maxRetries: 0,
                             waitTime: 1000, 
                             timeout: 30000
                         }
@@ -247,35 +302,21 @@
                         newTodo.id = savedTodo.id
                         // add the id to client side state.todos
                         
-
-
                     }).catch((err) => {
                         // console.log('error: ', err)
                         // Should remove locally if unable to save on server, and render
-                        state.todos.pop()
-                        render(state.todos) 
+                        // Should use 'indexOf(newTodo)' not 'pop'
+                        // state.todos.pop()
 
                         // tell the user it is not saved in the server, wanna retry?
-                        state.error = 'Failed to save data, do you want to retry?'
-                        displayError(state.error)
+                        state.error = {
+                            type: 'saveError',
+                            data: newTodo,
+                        }
 
+                        render(state)
                     })
                 }
-                 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 else if (how === 'delete') {
@@ -316,9 +357,9 @@
                     })
 
                     promiseComplete.then((todos) => {
-                            console.log(todos)
+                        console.log(todos)
                     }).catch((err) => {
-                            console.log('error')
+                        console.log('error')
                     })
 
 
@@ -335,15 +376,11 @@
                     })
 
                     promiseUncomplete.then((todos) => {
-                            console.log(todos)
+                        console.log(todos)
                     }).catch((err) => {
-                            console.log('error')
+                        console.log('error')
                     })
                 }
-
-
-
-
 
                 else if (how === 'clearCompleted'){
 
@@ -352,7 +389,7 @@
                     })
 
                     console.log('completedTodos', completedTodos)
-                    const  idArr = {
+                    const idArr = {
                         arr: []
                     }
 
@@ -362,7 +399,7 @@
 
                     // call post to send data, not delete
 
-                    var promiseClearComplete = ajax({
+                    const promiseClearComplete = ajax({
                         url: 'http://localhost:4000/api/todos/clearcompleted',
                         method: 'POST',
                         data: idArr,
@@ -382,7 +419,7 @@
                 }
 
                 console.log('state.todos:', state.todos)
-                render(state.todos) 
+                render(state) 
             }
 
 
@@ -414,18 +451,24 @@
 
             const ul = document.getElementById('item-list')
 
+            // update to take the whole state so you can render error
             function render(data) {
-                renderList(data)
-                renderItemLeft(data)
-                //renderError(state.error)
+                renderList(data.todos)
+                renderItemLeft(data.todos)
+                renderError(state.error)
             }
 
-            // function renderError() {
-            //     const errorDisplay = document.getElementById('display-error')
-            //     if(state.error !== null) {
-            //         errorDisplay.innerHTML = state.error
-            //     }
-            // }
+            function renderError(error) {
+                console.log('renderError: ', error)
+                switch (error.type) {
+                    case 'saveError':
+                        saveError.classList.add('active')
+                        break;
+                    default:
+                        saveError.classList.remove('active')
+                        break;
+                }
+            }
 
 
             function renderList(items){
@@ -442,14 +485,14 @@
                         input.value = ''
                         item.added = true
                         
-                        var button = document.createElement('button')
+                        const button = document.createElement('button')
                         button.innerHTML = "x"
                         li.appendChild(button)
                         button.addEventListener('click', (evt) => {
                             updateData('delete', state, {item: item})
                         })
 
-                        var checkbox = document.createElement('input')
+                        const checkbox = document.createElement('input')
                         checkbox.type = 'checkbox'
                         // checkbox.setAttribute('type', 'checkbox')
                         li.prepend(checkbox)
@@ -473,11 +516,11 @@
             }
 
             function renderItemLeft(items){
-                var itemLeft = items.filter((item) => {
+                const itemLeft = items.filter((item) => {
                     return item.completed === false
                 })
 
-                var countItemLeft = document.getElementById('item-left')
+                const countItemLeft = document.getElementById('item-left')
                 countItemLeft.innerHTML = itemLeft.length
             }
 
@@ -506,26 +549,31 @@
             const input = document.getElementById('item-input')
             input.addEventListener('keypress',(evt) => {
                 if (evt.key == 'Enter') {
-                    var newItem = evt.target.value
+                    const newItem = evt.target.value
+                    // if (newItem !== '')
                     updateData('addItem', state, {item: newItem})
                 }
             })
 
-            var buttonCompleted = document.getElementById('button-completed')
+            const buttonCompleted = document.getElementById('button-completed')
             buttonCompleted.addEventListener('click',showCompletedItem)
 
-            var buttonShowAll = document.getElementById('button-show-all')
+            const buttonShowAll = document.getElementById('button-show-all')
             buttonShowAll.addEventListener('click',showAllItem)
 
-            var buttonShowActive = document.getElementById('button-show-active')
+            const buttonShowActive = document.getElementById('button-show-active')
             buttonShowActive.addEventListener('click',showActiveItem)
 
-            var buttonClearComplete = document.getElementById('button-clear-completed')
+            const buttonClearComplete = document.getElementById('button-clear-completed')
             buttonClearComplete.addEventListener('click',(evt) => {
                 updateData('clearCompleted', state)
             })
 
 
+            const saveError = document.getElementById('save-error')
+            saveError.querySelector('.confirm-btn').addEventListener('click', (evt) => {
+                updateData('retrySave', state)
+            })
      
             // call GET 
             var promiseGet = ajax({
@@ -537,7 +585,7 @@
             promiseGet.then((todos) => {
                 console.log(todos)
                 state.todos = todos
-                render(state.todos)
+                render(state)
             }).catch((err) => {
                 console.log('error: ', err)
             })
