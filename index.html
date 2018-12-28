@@ -1,0 +1,551 @@
+
+<html>
+    <head>
+      <style>
+  
+        body {
+          background-color: #1d2126;
+          color: white;
+        }
+  
+        li.checked {
+          text-decoration: line-through;
+          color: silver;
+        }
+  
+        ul.completed li:not(.checked) {
+          display: none
+        }
+  
+        ul.active li.checked {
+          display: none
+        }
+  
+  
+      </style>
+    </head>
+    <body> 
+  
+    <h1>todos</h1>
+
+    
+  
+    <input id='item-input' class='item-input'>
+
+    <div id='display-error'></div>
+  
+    <ul id='item-list' class='item-list'></ul>
+  
+    <div id='item-left'></div>item left
+
+    
+
+
+  
+    <button id='button-show-all' class='button-show-all'>All</button>
+    <button id='button-show-active' class='button-show-active'>Active</button>
+    <button id='button-completed' class='button-completed'>Completed</button>
+  
+    <button id='button-clear-completed' class='button-clear-completed'>Clear completed</button> 
+  
+  
+  
+      <script>
+  
+  
+
+
+            const state = {
+                error: null,
+                todos: []
+            }
+
+            
+
+            /*
+
+            3. Update to display error to user. To do this add a property to "state" that you
+               can render when there is an error.
+            4. It's very common for network clients (like ajax) to have a "retry policy". 
+            This is usually configurable, it will become a property in the options object. 
+            including 3 things: how many times to retry, how long to wait between retrys 
+            and how long to wait total
+
+            options{
+                url:
+                method:
+                data:
+                retryPolicy: {
+                    maxRetries:
+                    waitTime: 1000 
+                    timeout: 30000
+                }
+            }
+
+            
+
+
+
+            function closure() {
+                // create a variable, count, is a state that retry uses 
+                // to decide it (retry) behaves
+                let count = 0
+
+                // create a new function 
+                function retry() {
+                    if (count < 5) {
+                        count +=1
+                        other codes
+                        retry()
+                    }
+                }
+
+                retry()
+            }
+
+            closure()
+            closure()
+
+
+
+
+
+
+            const x = new Promise((resolve, reject) => {
+               resolve(4)
+               resolve('hi')
+               resolve(true)
+               reject(new Error('what error'))
+           })
+
+           x.then((val) => console.log('val: ', val))
+
+
+
+
+            **/
+
+            function displayError(error) {
+                const errorDisplay = document.getElementById('display-error')
+                errorDisplay.innerHTML = error
+            }
+        
+
+           
+
+            // this is to create a closure to create a variable and a real callback function 
+            function ajax(options) {
+                let count = 0
+                // let elapsedTime = 0 //Don't use this one
+                let startTime = Date.now() //use this one
+                // this real one does the job, same name 
+                function _ajax() {
+                // function _ajax(options) {    
+                    // if(count < 4) {
+                    //     count += 1
+                        return new Promise((resolve, reject) => {
+                        // return promiseObj = new Promise(function(resolve, reject) {
+                            const xhr = new XMLHttpRequest ()
+                            xhr.open(options.method, options.url, true)
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    console.log('success responseText', xhr.responseText)
+                                    resolve(JSON.parse(xhr.responseText))
+                                } 
+                                else {
+                                    console.log('error responseText:', xhr.responseText)
+                                    // Two kinds of errors: your fault or user's, What to do for each?
+                                    console.log('retry: ', options.retryPolicy)
+                                    // check if it has a retry policy
+                                    if(options.retryPolicy !== null) {
+                                        // increment count
+                                        count += 1
+                                        console.log('count: ', count)
+                                        console.log('max: ', options.maxRetries)
+                                        //used up all retries?
+                                        if( count <= options.retryPolicy.maxRetries ) {
+                                            //current time and start time, subtract, bigger than timeout?
+                                            if (Date.now() - startTime < options.retryPolicy.timeout) {
+                                                //_ajax(options)
+                                                console.log('retry')
+                                                // Trivia: Wrapping logic inside of an empty callback just to
+                                                // delay the logic is called a thunk.
+                                                setTimeout(() => {
+                                                    resolve(_ajax())
+                                                }, options.retryPolicy.waitTime)
+                                                
+                                            } else {
+                                                reject(new Error('Timeout'))
+                                            }
+                                        } else {
+                                            reject(new Error('Max retries exceeded'))
+                                        }
+                                    } else {
+                                        console.log('error responseText:', xhr.responseText)
+                                        reject(xhr.responseText)
+                                    }
+                                    // console.log('error responseText:', xhr.responseText)
+                                    // reject(JSON.parse(xhr.responseText))
+                                }
+                            }
+                            xhr.setRequestHeader('Content-Type','application/json; charset=utf-8')
+                            
+                            console.log('options.data',options.data)
+                            if(options.data !== null) {
+                                console.log('send: 1')
+                                xhr.send(JSON.stringify(options.data))
+                            } else{
+                                console.log('send: 2')
+                                xhr.send()
+                            }
+                        })
+                        //_ajax()
+                    }
+                // By rule, don't let variables leak outside the function that created them.
+                // _ajax()
+                // return promiseObj
+                return _ajax()
+            }
+
+
+
+
+            function updateData(how, state, data) {
+                console.log('how: ', how)
+                console.log('state: ', state)
+                // call post
+                if(how === 'addItem') {
+                
+                    var newTodo = {
+                        id: null,
+                        name: data.item, 
+                        completed: false
+                    }
+
+                    // add to the state locally
+                    state.todos.push(newTodo)
+                    console.log('state.todos:', state.todos)
+                   
+                   
+                    // add it to the server side state.todos
+                    var promiseAdd = ajax({
+                        url: 'http://localhost:4000/api/todos',
+                        method: 'POST',
+                        data: newTodo,
+                        retryPolicy: {
+                            maxRetries: 3,
+                            waitTime: 1000, 
+                            timeout: 30000
+                        }
+
+                        //retryPolicy: null
+                    })
+
+                    promiseAdd.then((savedTodo) => {
+                        console.log(savedTodo)
+                        // update locally
+                        newTodo.id = savedTodo.id
+                        // add the id to client side state.todos
+                        
+
+
+                    }).catch((err) => {
+                        // console.log('error: ', err)
+                        // Should remove locally if unable to save on server, and render
+                        state.todos.pop()
+                        render(state.todos) 
+
+                        // tell the user it is not saved in the server, wanna retry?
+                        state.error = 'Failed to save data, do you want to retry?'
+                        displayError(state.error)
+
+                    })
+                }
+                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                else if (how === 'delete') {
+                    // call delete
+                    var index = state.todos.indexOf(data.item) 
+                    //console.log('index:', index)
+
+                    var id = data.item.id
+                    console.log('id:', id)
+
+                    // you need to delete it locally, data on the server stay on the server 
+                    state.todos.splice(state.todos.indexOf(data.item),1)
+
+                    // delete it on the server side state.todos
+                    var promiseDelete = ajax({
+                        url: `http://localhost:4000/api/todos/${id}`,
+                        method: 'DELETE', 
+                        data: null, 
+                    })
+
+                    promiseDelete.then((todos) => {
+                        console.log(todos)
+                    }).catch((err) => {
+                        console.log('error')
+                    })
+                }
+
+
+                else if (how === 'complete') {
+                    data.item.completed = true
+                    // call put
+                    var id = data.item.id
+
+                    var promiseComplete = ajax({
+                        url: `http://localhost:4000/api/todos/${id}/complete`,
+                        method: 'PUT', 
+                        data: null, 
+                    })
+
+                    promiseComplete.then((todos) => {
+                            console.log(todos)
+                    }).catch((err) => {
+                            console.log('error')
+                    })
+
+
+                }
+
+                else if (how === 'uncomplete') {
+                    data.item.completed = false
+                    var id = data.item.id
+                    // call put    
+                     var promiseUncomplete = ajax({
+                        url: `http://localhost:4000/api/todos/${id}/uncomplete`,
+                        method: 'PUT', 
+                        data: null, 
+                    })
+
+                    promiseUncomplete.then((todos) => {
+                            console.log(todos)
+                    }).catch((err) => {
+                            console.log('error')
+                    })
+                }
+
+
+
+
+
+                else if (how === 'clearCompleted'){
+
+                    const completedTodos = state.todos.filter((next) =>{
+                        return next.completed === true  
+                    })
+
+                    console.log('completedTodos', completedTodos)
+                    const  idArr = {
+                        arr: []
+                    }
+
+                    completedTodos.forEach((next) => idArr.arr.push(next.id))
+
+                    //console.log('idArr.arr', idArr.arr)
+
+                    // call post to send data, not delete
+
+                    var promiseClearComplete = ajax({
+                        url: 'http://localhost:4000/api/todos/clearcompleted',
+                        method: 'POST',
+                        data: idArr,
+                    })
+
+                    promiseClearComplete.then((todos) => {
+                            console.log(todos)
+                    }).catch((err) => {
+                            console.log('error')
+                            //renderError()
+                    })
+
+                    // update locally using filter
+                    state.todos = state.todos.filter((next) =>{
+                        return next.completed === false  
+                    })
+                }
+
+                console.log('state.todos:', state.todos)
+                render(state.todos) 
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //View
+
+
+ 
+
+            
+
+
+            const ul = document.getElementById('item-list')
+
+            function render(data) {
+                renderList(data)
+                renderItemLeft(data)
+                //renderError(state.error)
+            }
+
+            // function renderError() {
+            //     const errorDisplay = document.getElementById('display-error')
+            //     if(state.error !== null) {
+            //         errorDisplay.innerHTML = state.error
+            //     }
+            // }
+
+
+            function renderList(items){
+                
+                const ul = document.getElementById('item-list')
+                ul.innerHTML = ""
+
+                items.forEach((item, i) => {
+                
+                    if (item.added === false || true) {
+                        const li = document.createElement('li')
+                        li.innerHTML = item.name
+                        ul.appendChild(li)
+                        input.value = ''
+                        item.added = true
+                        
+                        var button = document.createElement('button')
+                        button.innerHTML = "x"
+                        li.appendChild(button)
+                        button.addEventListener('click', (evt) => {
+                            updateData('delete', state, {item: item})
+                        })
+
+                        var checkbox = document.createElement('input')
+                        checkbox.type = 'checkbox'
+                        // checkbox.setAttribute('type', 'checkbox')
+                        li.prepend(checkbox)
+                        checkbox.checked = item.completed
+
+                        if (item.completed) {
+                            li.classList.add('checked')
+                        }
+                        
+                        checkbox.addEventListener('click', (evt) => { 
+                            console.log('item: ', item)
+                            if (item.completed === false) {
+                                updateData('complete', state, {item: item})
+                            }
+                            else {
+                                updateData('uncomplete', state, {item: item})
+                            }
+                        })
+                    }
+                })
+            }
+
+            function renderItemLeft(items){
+                var itemLeft = items.filter((item) => {
+                    return item.completed === false
+                })
+
+                var countItemLeft = document.getElementById('item-left')
+                countItemLeft.innerHTML = itemLeft.length
+            }
+
+            function showCompletedItem(){
+                if(ul.classList.contains('active')){
+                    ul.classList.remove('active')
+                }
+                ul.classList.add('completed')
+            }
+
+            function showActiveItem(){
+                if (ul.classList.contains('completed')){
+                    ul.classList.remove('completed')
+                }
+                ul.classList.add('active')
+            }
+
+            function showAllItem(){
+                ul.classList.remove('completed')
+                ul.classList.remove('active')
+            }
+
+
+
+            //Event
+            const input = document.getElementById('item-input')
+            input.addEventListener('keypress',(evt) => {
+                if (evt.key == 'Enter') {
+                    var newItem = evt.target.value
+                    updateData('addItem', state, {item: newItem})
+                }
+            })
+
+            var buttonCompleted = document.getElementById('button-completed')
+            buttonCompleted.addEventListener('click',showCompletedItem)
+
+            var buttonShowAll = document.getElementById('button-show-all')
+            buttonShowAll.addEventListener('click',showAllItem)
+
+            var buttonShowActive = document.getElementById('button-show-active')
+            buttonShowActive.addEventListener('click',showActiveItem)
+
+            var buttonClearComplete = document.getElementById('button-clear-completed')
+            buttonClearComplete.addEventListener('click',(evt) => {
+                updateData('clearCompleted', state)
+            })
+
+
+     
+            // call GET 
+            var promiseGet = ajax({
+                url: 'http://localhost:4000/api/todos',
+                method: 'GET',
+                data: null
+            })
+
+            promiseGet.then((todos) => {
+                console.log(todos)
+                state.todos = todos
+                render(state.todos)
+            }).catch((err) => {
+                console.log('error: ', err)
+            })
+
+
+
+
+  
+      </script>
+    </body>
+  </html>
