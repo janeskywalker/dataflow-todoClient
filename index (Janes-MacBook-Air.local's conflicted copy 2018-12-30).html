@@ -95,14 +95,13 @@
       <script>
   
   
-            // We create an empty error so we can reuse the same object multiple times.
-            const DEFAULT_ERROR = {
-                type: 'None',
-                data: null,
-            }
+
 
             const state = {
-                error: DEFAULT_ERROR,
+                error: {
+                    type: 'None',
+                    data: null,
+                },
                 todos: []
             }
 
@@ -118,12 +117,7 @@
            // 2. add default method
            // 3. work on updateDate(retrySave, state) to enable retry saving new todo
            // 4. work on renderError
-           // 5. refactor so retrySave and addItem use the same 'saveTodo' function, 
-           // this function should return a new state
-           // 6. seperate js
-           // 7. create webpack 
-           // 8. seperate code in different files
-           
+
             function ajax(options) {
                 let count = 0
                 let startTime = Date.now() 
@@ -194,48 +188,6 @@
 
             // model -> render -> action -> update -> render -> action -> update -> render
 
-            function saveTodo(newTodo, state) {
-                const promiseAdd = ajax({
-                    url: 'http://localhost:4000/api/todos',
-                    method: 'POST',
-                    data: newTodo,
-                    retryPolicy: {
-                        maxRetries: 0,
-                        waitTime: 1000, 
-                        timeout: 30000
-                    }
-                    //retryPolicy: null
-                })
-
-                return promiseAdd.then((savedTodo) => {
-                    console.log(savedTodo)
-                    // update locally
-                    // add the id to client side state.todos
-
-                    newTodo.id = savedTodo.id
-
-                    state.error = DEFAULT_ERROR
-
-                    // render(state)
-                    return state 
-                    
-                }).catch((err) => {
-                    console.log('error: ', err)
-                    state.todos.pop()
-
-                    // define the error object
-                    state.error = {
-                        type: 'saveError',
-                        data: newTodo
-                    }
-
-                    console.log(state.error.data)
-                    console.log('state:', state)
-
-                    // render(state)
-                    return state 
-                })
-            }
 
             function updateData(how, state, data) {
                 console.log('how: ', how)
@@ -253,37 +205,114 @@
                     state.todos.push(newTodo)
                     console.log('state.todos:', state.todos)
                    
-                    saveTodo(newTodo, state).then((state) => {
+                   
+                    // add it to the server side state.todos
+                    const promiseAdd = ajax({
+                        url: 'http://localhost:4000/api/todos',
+                        method: 'POST',
+                        data: newTodo,
+                        retryPolicy: {
+                            maxRetries: 0,
+                            waitTime: 1000, 
+                            timeout: 30000
+                        }
+
+                        //retryPolicy: null
+                    })
+
+                    promiseAdd.then((savedTodo) => {
+                        console.log(savedTodo)
+                        // update locally
+                        newTodo.id = savedTodo.id
+                        // add the id to client side state.todos
+                        
+                    }).catch((err) => {
+                         console.log('error: ', err)
+                        // Should remove locally if unable to save on server, and render
+                        // Should use 'indexOf(newTodo)' not 'pop'
+                        // state.todos.pop() can be wrong b/c it is asynch
+                        state.todos.pop()
+
+                        // tell the user it is not saved in the server, wanna retry?
+                        // define the error object
+                        state.error = {
+                            type: 'saveError',
+                            data: newTodo,
+                        }
+
+                        console.log(state.error.data)
+
+                        console.log('state:', state)
+
                         render(state)
                     })
                 }
 
 
                 if(how === 'retrySave') {
+                    console.log(data.newthing)
 
-                    const newTodo = state.error.data
+                    const newTodo = data.newthing
 
                     console.log('newTodo:', newTodo)
 
                     // add to the state locally
                     state.todos.push(newTodo)
                     console.log('state.todos:', state.todos)
+                   
+                   
+                    // add it to the server side state.todos
+                    const promiseAdd = ajax({
+                        url: 'http://localhost:4000/api/todos',
+                        method: 'POST',
+                        data: newTodo,
+                        retryPolicy: {
+                            maxRetries: 0,
+                            waitTime: 1000, 
+                            timeout: 30000
+                        }
 
-                    /**
-                        // Your existing 'then' and 'catch' will go inside the 'saveTodo' function
-                        const promisedSave = saveTodo(newTodo)
+                        //retryPolicy: null
+                    })
 
-                        promisedSave.then((state) => {
-                            render(state)
-                        })
-                     
-                    */
+                    promiseAdd.then((savedTodo) => {
+                        console.log(savedTodo)
+                        // update locally
+                        newTodo.id = savedTodo.id
+                        // add the id to client side state.todos
+                        state.error.type = 'None' 
 
-                   // add it to the server side state.todos
-                   saveTodo(newTodo, state).then((state) => {
+                        
+                        
+                    }).catch((err) => {
+                         console.log('error: ', err)
+                        // Should remove locally if unable to save on server, and render
+                        // Should use 'indexOf(newTodo)' not 'pop'
+                        // state.todos.pop() can be wrong b/c it is asynch
+                        state.todos.pop()
+
+                        // tell the user it is not saved in the server, wanna retry?
+                        // define the error object
+                        state.error = {
+                            type: 'saveError',
+                            data: newTodo,
+                        }
+
+                        console.log(state.error.data)
+
+                        console.log('state:', state)
+
                         render(state)
                     })
+
+
                 }
+
+
+
+
+
+
 
 
 
@@ -374,10 +403,10 @@
                     })
 
                     promiseClearComplete.then((todos) => {
-                        console.log(todos)
+                            console.log(todos)
                     }).catch((err) => {
-                        console.log('error')
-                        //renderError()
+                            console.log('error')
+                            //renderError()
                     })
 
                     // update locally using filter
@@ -525,7 +554,7 @@
             const saveError = document.getElementById('save-error')
             saveError.querySelector('.confirm-btn').addEventListener('click', (evt) => {
                 console.log('newthing:', state.error.data)
-                updateData('retrySave', state)
+                updateData('retrySave', state, {newthing: state.error.data})
             })
 
 
