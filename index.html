@@ -119,7 +119,8 @@
            // 3. work on updateDate(retrySave, state) to enable retry saving new todo
            // 4. work on renderError
            // 5. refactor so retrySave and addItem use the same 'saveTodo' function, 
-           // this function should return a new state
+           //    this function should return a new state
+           // 5a. error handelig for other methods
            // 6. seperate js
            // 7. create webpack 
            // 8. seperate code in different files
@@ -128,23 +129,24 @@
                 let count = 0
                 let startTime = Date.now() 
 
-                // const defaultPolicy = {
-                //     maxRetries: 5,
-                //     waitTime: 1000, 
-                //     timeout: 10000
-                // }
-                // const retryPolicy = options.retryPolicy || defaultPolicy
+                const defaultPolicy = {
+                    maxRetries: 3,
+                    waitTime: 3000, 
+                    timeout: 10000
+                }
+
+                const retryPolicy = options.retryPolicy || defaultPolicy
 
 
-                // const defaultMethod = 'GET'
-                // const method = options.method || defaultMethod
+                const defaultMethod = 'GET'
+                const method = options.method || defaultMethod
                 
 
                 function _ajax() {
                
                         return new Promise((resolve, reject) => {
                             const xhr = new XMLHttpRequest ()
-                            xhr.open(options.method, options.url, true)
+                            xhr.open(method, options.url, true)
                             xhr.onload = function() {
                                 if (xhr.status === 200) {
                                     console.log('success responseText', xhr.responseText)
@@ -152,17 +154,19 @@
                                 } 
                                 else {
                                     console.log('error responseText:', xhr.responseText)
-                                    console.log('retry: ', options.retryPolicy)
+                                    console.log('retryPolicy: ', options.retryPolicy)
+                                    // using default retry means no need to check this anymore?
                                     if(options.retryPolicy !== null) {
+                                        console.log('options.retryPolicy:', options.retryPolicy)
                                         count += 1
                                         // console.log('count: ', count)
                                         // console.log('max: ', options.retryPolicy.maxRetries)
-                                        if( count <= options.retryPolicy.maxRetries ) {
-                                            if (Date.now() - startTime < options.retryPolicy.timeout) {
+                                        if( count <= retryPolicy.maxRetries ) {
+                                            if (Date.now() - startTime < retryPolicy.timeout) {
                                                 //console.log('retry')
                                                 setTimeout(() => {
                                                     resolve(_ajax())
-                                                }, options.retryPolicy.waitTime)
+                                                }, retryPolicy.waitTime)
                                                 
                                             } else {
                                                 reject(new Error('Timeout'))
@@ -199,11 +203,13 @@
                     url: 'http://localhost:4000/api/todos',
                     method: 'POST',
                     data: newTodo,
+
                     retryPolicy: {
-                        maxRetries: 0,
+                        maxRetries: 3,
                         waitTime: 1000, 
                         timeout: 30000
                     }
+
                     //retryPolicy: null
                 })
 
@@ -309,6 +315,9 @@
                         console.log(todos)
                     }).catch((err) => {
                         console.log('error')
+
+                        // if delete error, retry policy, but dont have to tell the user to redelete?
+
                     })
                 }
 
