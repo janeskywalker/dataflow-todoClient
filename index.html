@@ -30,8 +30,6 @@
 
 
 
-
-
         div.error-widget {
             display: none;
         }
@@ -75,7 +73,9 @@
     </div>
 
 
-
+    <div id='delete-error' class='error-widget'>
+        <span class='error-text'>Failed to delete data, do you want to retry clicking the delete box?</span>
+    </div>
 
 
 
@@ -155,15 +155,16 @@
                                 else {
                                     console.log('error responseText:', xhr.responseText)
                                     console.log('retryPolicy: ', options.retryPolicy)
+
                                     // using default retry means no need to check this anymore?
-                                    if(options.retryPolicy !== null) {
+                                    //if(options.retryPolicy !== null) {
                                         console.log('options.retryPolicy:', options.retryPolicy)
                                         count += 1
                                         // console.log('count: ', count)
                                         // console.log('max: ', options.retryPolicy.maxRetries)
                                         if( count <= retryPolicy.maxRetries ) {
                                             if (Date.now() - startTime < retryPolicy.timeout) {
-                                                //console.log('retry')
+                                                console.log('retry')
                                                 setTimeout(() => {
                                                     resolve(_ajax())
                                                 }, retryPolicy.waitTime)
@@ -171,14 +172,19 @@
                                             } else {
                                                 reject(new Error('Timeout'))
                                             }
-                                        } else {
-                                            //console.log('Max retries exceeded')
+                                        } 
+                                        
+                                        else {
+                                            console.log('Max retries exceeded')
                                             reject(new Error('Max retries exceeded'))
                                         }
-                                    } else {
-                                        console.log('error responseText:', xhr.responseText)
-                                        reject(xhr.responseText)
-                                    }
+
+                                    // } 
+                                    
+                                    // else {
+                                    //     console.log('error responseText:', xhr.responseText)
+                                    //     reject(xhr.responseText)
+                                    // }
                                 }
                             }
                             xhr.setRequestHeader('Content-Type','application/json; charset=utf-8')
@@ -301,8 +307,7 @@
                     var id = data.item.id
                     console.log('id:', id)
 
-                    // you need to delete it locally, data on the server stay on the server 
-                    state.todos.splice(state.todos.indexOf(data.item),1)
+                    
 
                     // delete it on the server side state.todos
                     var promiseDelete = ajax({
@@ -311,15 +316,43 @@
                         data: null, 
                     })
 
+                    // if delete error, auto retry,
+                    // display err message to user to retry, retry button needed
+                    // add delete error widget 
+
                     promiseDelete.then((todos) => {
                         console.log(todos)
+                        // you need to delete it locally, data on the server stay on the server 
+                        state.todos.splice(state.todos.indexOf(data.item),1)
+                        render(state)
+
                     }).catch((err) => {
-                        console.log('error')
+                        console.log(err)
+                        state.error = {
+                            type: 'deleteError',
+                            data: null
+                        }
 
-                        // if delete error, retry policy, but dont have to tell the user to redelete?
-
+                        render(state)
                     })
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 else if (how === 'complete') {
@@ -418,6 +451,9 @@
                 switch (error.type) {
                     case 'saveError':
                         saveError.classList.add('active')
+                        break;
+                    case 'deleteError':
+                        deleteError.classList.add('active')
                         break;
                     default:
                         saveError.classList.remove('active')
@@ -536,6 +572,8 @@
                 console.log('newthing:', state.error.data)
                 updateData('retrySave', state)
             })
+
+            const deleteError = document.getElementById('delete-error')
 
 
 
