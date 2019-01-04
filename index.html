@@ -74,7 +74,9 @@
 
 
     <div id='delete-error' class='error-widget'>
-        <span class='error-text'>Failed to delete data, do you want to retry clicking the delete box?</span>
+        <span class='error-text'>Failed to delete data, do you want to retry clicking the delete box?
+            (changed to failed to deleter, will be retrying in 1 second)
+        </span>
     </div>
 
 
@@ -103,7 +105,8 @@
 
             const state = {
                 error: DEFAULT_ERROR,
-                todos: []
+                todos: [],
+                rertryCount: 0,
             }
 
             
@@ -132,7 +135,7 @@
                 const defaultPolicy = {
                     maxRetries: 3,
                     waitTime: 3000, 
-                    timeout: 10000
+                    timeout: 10000,
                 }
 
                 const retryPolicy = options.retryPolicy || defaultPolicy
@@ -162,8 +165,14 @@
                                         count += 1
                                         // console.log('count: ', count)
                                         // console.log('max: ', options.retryPolicy.maxRetries)
-                                        if( count <= retryPolicy.maxRetries ) {
-                                            if (Date.now() - startTime < retryPolicy.timeout) {
+                                        if( 
+                                            count <= retryPolicy.maxRetries ||
+                                            retryPolicy.forever === true
+                                        ) {
+                                            if (
+                                                Date.now() - startTime < retryPolicy.timeout || 
+                                                retryPolicy.forever === true
+                                            ) {
                                                 console.log('retry')
                                                 setTimeout(() => {
                                                     resolve(_ajax())
@@ -250,6 +259,7 @@
             }
 
             function updateData(how, state, data) {
+                let retries = retryCount || 0
                 console.log('how: ', how)
                 console.log('state: ', state)
                 // call post
@@ -301,16 +311,19 @@
 
                 else if (how === 'delete') {
                     // call delete
-                    var index = state.todos.indexOf(data.item) 
+                    const index = state.todos.indexOf(data.item) 
                     //console.log('index:', index)
 
-                    var id = data.item.id
+                    const id = data.item.id
                     console.log('id:', id)
 
-                    
+                    //delete it locally, data on the server stay on the server 
+                    // state.todos.splice(state.todos.indexOf(data.item),1)
+                    state.todos = state.todos.filter((next) => next !== data.item)
 
+                    
                     // delete it on the server side state.todos
-                    var promiseDelete = ajax({
+                    const promiseDelete = ajax({
                         url: `http://localhost:4000/api/todos/${id}`,
                         method: 'DELETE', 
                         data: null, 
@@ -322,8 +335,10 @@
 
                     promiseDelete.then((todos) => {
                         console.log(todos)
-                        // you need to delete it locally, data on the server stay on the server 
-                        state.todos.splice(state.todos.indexOf(data.item),1)
+                        
+                        state.error = DEFAULT_ERROR
+                        state.retryCount = 0
+
                         render(state)
 
                     }).catch((err) => {
@@ -334,6 +349,14 @@
                         }
 
                         render(state)
+
+                        state.retryCount += 1
+
+                        setTimeout(() => {
+                            updateData('delete', state, data)
+                        }, 1000 * state.retryCount)
+
+
                     })
                 }
 
@@ -358,9 +381,9 @@
                 else if (how === 'complete') {
                     data.item.completed = true
                     // call put
-                    var id = data.item.id
+                    const id = data.item.id
 
-                    var promiseComplete = ajax({
+                    const promiseComplete = ajax({
                         url: `http://localhost:4000/api/todos/${id}/complete`,
                         method: 'PUT', 
                         data: null, 
@@ -457,6 +480,7 @@
                         break;
                     default:
                         saveError.classList.remove('active')
+                        deleteError.classList.remove('active')
                         break;
                 }
             }
