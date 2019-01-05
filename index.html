@@ -29,7 +29,6 @@
 
 
 
-
         div.error-widget {
             display: none;
         }
@@ -123,7 +122,7 @@
            // 4. work on renderError
            // 5. refactor so retrySave and addItem use the same 'saveTodo' function, 
            //    this function should return a new state
-           // 5a. error handelig for other methods
+           // 5a. error handelig for other methods(delete, complete. uncomplete, clear complete)
            // 6. seperate js
            // 7. create webpack 
            // 8. seperate code in different files
@@ -140,78 +139,65 @@
 
                 const retryPolicy = options.retryPolicy || defaultPolicy
 
-
                 const defaultMethod = 'GET'
                 const method = options.method || defaultMethod
                 
-
                 function _ajax() {
-               
-                        return new Promise((resolve, reject) => {
-                            const xhr = new XMLHttpRequest ()
-                            xhr.open(method, options.url, true)
-                            xhr.onload = function() {
-                                if (xhr.status === 200) {
-                                    console.log('success responseText', xhr.responseText)
-                                    resolve(JSON.parse(xhr.responseText))
-                                } 
-                                else {
-                                    console.log('error responseText:', xhr.responseText)
-                                    console.log('retryPolicy: ', options.retryPolicy)
+                    return new Promise((resolve, reject) => {
+                        const xhr = new XMLHttpRequest ()
+                        xhr.open(method, options.url, true)
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                console.log('success responseText', xhr.responseText)
+                                resolve(JSON.parse(xhr.responseText))
+                            } else {
+                                console.log('error responseText:', xhr.responseText)
+                                console.log('retryPolicy: ', options.retryPolicy)
 
-                                    // using default retry means no need to check this anymore?
-                                    //if(options.retryPolicy !== null) {
-                                        console.log('options.retryPolicy:', options.retryPolicy)
-                                        count += 1
-                                        // console.log('count: ', count)
-                                        // console.log('max: ', options.retryPolicy.maxRetries)
-                                        if( 
-                                            count <= retryPolicy.maxRetries ||
-                                            retryPolicy.forever === true
-                                        ) {
-                                            if (
-                                                Date.now() - startTime < retryPolicy.timeout || 
-                                                retryPolicy.forever === true
-                                            ) {
-                                                console.log('retry')
-                                                setTimeout(() => {
-                                                    resolve(_ajax())
-                                                }, retryPolicy.waitTime)
-                                                
-                                            } else {
-                                                reject(new Error('Timeout'))
-                                            }
-                                        } 
+                                console.log('options.retryPolicy:', options.retryPolicy)
+                                count += 1
+                                // console.log('count: ', count)
+                                // console.log('max: ', options.retryPolicy.maxRetries)
+                                if( 
+                                    count <= retryPolicy.maxRetries ||
+                                    retryPolicy.forever === true
+                                ) {
+                                    if (
+                                        Date.now() - startTime < retryPolicy.timeout || 
+                                        retryPolicy.forever === true
+                                    ) {
+                                        console.log('retry')
+                                        setTimeout(() => {
+                                            resolve(_ajax())
+                                        }, retryPolicy.waitTime)
                                         
-                                        else {
-                                            console.log('Max retries exceeded')
-                                            reject(new Error('Max retries exceeded'))
-                                        }
-
-                                    // } 
-                                    
-                                    // else {
-                                    //     console.log('error responseText:', xhr.responseText)
-                                    //     reject(xhr.responseText)
-                                    // }
+                                    } else {
+                                        reject(new Error('Timeout'))
+                                    }
+                                } else {
+                                    console.log('Max retries exceeded')
+                                    reject(new Error('Max retries exceeded'))
                                 }
                             }
-                            xhr.setRequestHeader('Content-Type','application/json; charset=utf-8')
-                            
-                            //console.log('options.data',options.data)
-                            if(options.data !== null) {
-                                //console.log('send: 1 with data')
-                                xhr.send(JSON.stringify(options.data))
-                            } else{
-                                //console.log('send: 2 no data')
-                                xhr.send()
-                            }
-                        })   
-                    }
+                        }
+                        xhr.setRequestHeader('Content-Type','application/json; charset=utf-8')
+                        
+                        //console.log('options.data',options.data)
+                        if(options.data !== null) {
+                            //console.log('send: 1 with data')
+                            xhr.send(JSON.stringify(options.data))
+                        } else{
+                            //console.log('send: 2 no data')
+                            xhr.send()
+                        }
+                    })   
+                }
                 return _ajax()
             }
 
-            // model -> render -> action -> update -> render -> action -> update -> render
+            // data flow:
+            // model -> render -> event -> update model-> render 
+            // -> event -> update model -> render
 
             function saveTodo(newTodo, state) {
                 const promiseAdd = ajax({
@@ -319,18 +305,20 @@
 
                     //delete it locally, data on the server stay on the server 
                     // state.todos.splice(state.todos.indexOf(data.item),1)
+                    // filter is better than splice 
                     state.todos = state.todos.filter((next) => next !== data.item)
-
                     
                     // delete it on the server side state.todos
                     const promiseDelete = ajax({
                         url: `http://localhost:4000/api/todos/${id}`,
                         method: 'DELETE', 
                         data: null, 
+                        //forever: true
                     })
 
-                    // if delete error, auto retry,
-                    // display err message to user to retry, retry button needed
+                    // if delete error, auto retry (interal retry)
+                    // display err message to user to retry, retry button not needed
+                    // update data to retry (external retry)
                     // add delete error widget 
 
                     promiseDelete.then((todos) => {
@@ -351,12 +339,9 @@
                         render(state)
 
                         state.retryCount += 1
-
                         setTimeout(() => {
                             updateData('delete', state, data)
                         }, 1000 * state.retryCount)
-
-
                     })
                 }
 
