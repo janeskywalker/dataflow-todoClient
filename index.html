@@ -105,7 +105,7 @@
             const state = {
                 error: DEFAULT_ERROR,
                 todos: [],
-                rertryCount: 0,
+                retryCount: 0,
             }
 
             
@@ -123,7 +123,7 @@
            // 5. refactor so retrySave and addItem use the same 'saveTodo' function, 
            //    this function should return a new state
            // 5a. error handelig for other methods(delete, complete. uncomplete, clear complete)
-           // 6. seperate js
+           // 6. seperate js from html
            // 7. create webpack 
            // 8. seperate code in different files
            
@@ -245,9 +245,11 @@
             }
 
             function updateData(how, state, data) {
-                let retries = retryCount || 0
+                //let retries = state.retryCount || 0
+
                 console.log('how: ', how)
                 console.log('state: ', state)
+
                 // call post
                 if (how === 'addItem') {
                 
@@ -339,9 +341,11 @@
                         render(state)
 
                         state.retryCount += 1
+                        console.log('state.retryCount:', state.retryCount)
+
                         setTimeout(() => {
                             updateData('delete', state, data)
-                        }, 1000 * state.retryCount)
+                        }, 3000 * state.retryCount)
                     })
                 }
 
@@ -458,6 +462,7 @@
                 console.log('state.error: ', error)
                 switch (error.type) {
                     case 'saveError':
+                        console.log(error.type)
                         saveError.classList.add('active')
                         break;
                     case 'deleteError':
