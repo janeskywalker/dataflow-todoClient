@@ -1,55 +1,27 @@
 import * as Ajax from './ajax'
 const ajax = Ajax.ajax
 
-
-import {updateData} from './updateData'
+import {updateData} from './update'
 
 import {render} from './render'
 
 import {showCompletedItem, showActiveItem, showAllItem} from './show.js'
 
-import {state, ul, input, buttonCompleted, buttonShowAll, buttonShowActive, 
-    buttonClearComplete, saveError, deleteError} from './const'
+import {DEFAULT_ERROR, Actions} from './const'
 
-
-
-// import {DEFAULT_ERROR, state, ul, input, buttonCompleted, buttonShowAll, buttonShowActive, 
-//     buttonClearComplete, saveError, deleteError} from './const'
-
+import {input, buttonCompleted, buttonShowAll, buttonShowActive, 
+    buttonClearComplete, saveError} from './elements'
 
 
 // data flow:
 // model -> render -> event -> update model-> render 
 // -> event -> update model -> render
 
-
-
-
-//View
-
-
-
-
-// function showCompletedItem(){
-//     if(ul.classList.contains('active')){
-//         ul.classList.remove('active')
-//     }
-//     ul.classList.add('completed')
-// }
-
-// function showActiveItem(){
-//     if (ul.classList.contains('completed')){
-//         ul.classList.remove('completed')
-//     }
-//     ul.classList.add('active')
-// }
-
-// function showAllItem(){
-//     ul.classList.remove('completed')
-//     ul.classList.remove('active')
-// }
-
-
+export const state = {
+    error: DEFAULT_ERROR,
+    todos: [],
+    retryCount: 0,
+}
 
 //Event
 //const input = document.getElementById('item-input')
@@ -57,7 +29,7 @@ input.addEventListener('keypress',(evt) => {
     if (evt.key == 'Enter') {
         const newItem = evt.target.value
         // if (newItem !== '')
-        updateData('addItem', state, {item: newItem})
+        updateData(Actions.ADD_TODO, state, {item: newItem})
     }
 })
 
@@ -72,17 +44,16 @@ buttonShowActive.addEventListener('click',showActiveItem)
 
 //const buttonClearComplete = document.getElementById('button-clear-completed')
 buttonClearComplete.addEventListener('click',(evt) => {
-    updateData('clearCompleted', state)
+    updateData(Actions.CLEAR_COMPLETE, state)
 })
-
-
 
 
 
 //const saveError = document.getElementById('save-error')
 saveError.querySelector('.confirm-btn').addEventListener('click', (evt) => {
     console.log('newthing:', state.error.data)
-    updateData('retrySave', state)
+    // shall pass state.error.data only?
+    updateData(Actions.RETRY_SAVE, state)
 })
 
 //const deleteError = document.getElementById('delete-error')
@@ -91,7 +62,7 @@ saveError.querySelector('.confirm-btn').addEventListener('click', (evt) => {
 
 
 // call GET 
-var promiseGet = ajax({
+const promiseGet = ajax({
     url: 'http://localhost:4000/api/todos',
     method: Ajax.GET_METHOD,
     data: null

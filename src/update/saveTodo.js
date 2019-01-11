@@ -1,8 +1,8 @@
 
-import * as Ajax from './ajax'
+import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
-import {DEFAULT_ERROR, state} from './const.js'
+import {DEFAULT_ERROR} from '../const'
 
 
 

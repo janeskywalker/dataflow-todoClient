@@ -1,32 +1,40 @@
+// This kind of data structure is called an 'enum'.
+export const Actions = {
+    ADD_TODO: 0,
+    RETRY_SAVE: 1,
+    DELETE: 2,
+    COMPLETE: 3,
+    UNCOMPLETE: 4,
+    CLEAR_COMPLETE: 5,
+}
+
+export const Errors = {
+    SAVE: 'saveError',
+    DELETE: 'deleteError', 
+    COMPLETE: 'completeError', 
+    UNCOMPLETE: 'uncompleteError',
+    CLEAR_COMPLETE: 'clearComleteError'
+}
+
+export const ACTIVE_CLASS = 'active'
+
+export const COMPLETED_CLASS = 'completed'
 
 
-
-// We create an empty error so we can reuse the same object multiple times.
-export const DEFAULT_ERROR = {
+// Object.freeze changes an object so it can't be changed
+export const DEFAULT_ERROR = Object.freeze({
     type: 'None',
     data: null,
-}
+})
 
-export const state = {
-    error: DEFAULT_ERROR,
-    todos: [],
-    retryCount: 0,
-}
+// You don't export or import data only to mutate (change) it.
+// export const state = {
+//     error: DEFAULT_ERROR,
+//     todos: [],
+//     retryCount: 0,
+// }
 
 
 
-export const ul = document.getElementById('item-list')
 
-export const input = document.getElementById('item-input')
 
-export const buttonCompleted = document.getElementById('button-completed')
-
-export const buttonShowAll = document.getElementById('button-show-all')
-
-export const buttonShowActive = document.getElementById('button-show-active')
-
-export const buttonClearComplete = document.getElementById('button-clear-completed')
-
-export const saveError = document.getElementById('save-error')
-
-export const deleteError = document.getElementById('delete-error')

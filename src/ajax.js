@@ -1,21 +1,21 @@
 export const GET_METHOD = 'GET'
 export const POST_METHOD = 'POST'
+export const PUT_METHOD = 'PUT'
+export const DELETE_METHOD = 'DELETE'
 
+const defaultPolicy = {
+    maxRetries: 3,
+    waitTime: 3000, 
+    timeout: 10000,
+}
 
+const defaultMethod = GET_METHOD
 
 export function ajax(options) {
     let count = 0
     let startTime = Date.now() 
 
-    const defaultPolicy = {
-        maxRetries: 3,
-        waitTime: 3000, 
-        timeout: 10000,
-    }
-
     const retryPolicy = options.retryPolicy || defaultPolicy
-
-    const defaultMethod = 'GET'
     const method = options.method || defaultMethod
     
     function _ajax() {
