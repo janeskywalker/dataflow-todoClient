@@ -12,15 +12,21 @@ import { render } from '../render';
 
 export const clearComplete = {
 
-    local(state) {
-
+    local(state, render) {
         // update locally using filter
-        state.todos = state.todos.filter((next) =>{
-            return next.completed === false  
+        // state.todos = state.todos.filter((next) =>{
+        //     return next.completed === false  
+        // })
+
+        // this is better bc it makes your code more resilient 
+        state.todos = state.todos.map((next) => {
+            if(next.completed === true) {
+                next.isDeleted = true 
+            }
+            return next
         })
-
+        console.log('isDeleted:', state.todos)
         render(state)
-
     },
 
     remote(state) {
@@ -48,7 +54,7 @@ export const clearComplete = {
     
         promiseClearComplete.then((todos) => {
             console.log('after CC', todos)
-            //render(state)
+            render(state)
         }).catch((err) => {
             console.log('error')
             //renderError()

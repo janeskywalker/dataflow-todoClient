@@ -15,7 +15,7 @@ export function renderList(state){
     console.log('items:', items)
 
     items.forEach((item) => {
-        if (item.added === false || true) {
+        if (item.added === false || true && item.isDeleted === false) {
             const li = renderItem(item, state)
 
             // append li to ul

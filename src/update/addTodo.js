@@ -5,7 +5,8 @@ export function addTodo(data, state, render) {
     const newTodo = {
         id: null,
         name: data.item, 
-        completed: false
+        completed: false,
+        isDeleted: false,
     }
 
     // add to the state locally
