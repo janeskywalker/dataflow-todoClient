@@ -16,6 +16,19 @@ export const Errors = {
     CLEAR_COMPLETE: 'clearComleteError'
 }
 
+export const Selectors = {
+    ITEM_LIST: '#item-list',
+    INPUT: '#item-input', 
+    BUTTON_COMPLETED: '#button-completed', 
+    BUTTON_SHOW_ALL: '#button-show-all', 
+    BUTTON_SHOW_ACTIVE: '#button-show-active',
+    BUTTON_CLEAR_COMPLETE: '#button-clear-completed',
+    SAVE_ERROR: '#save-error',
+    DELETE_ERROR: '#delete-error',
+    COUNT_ITEM_LEFT: '#item-left',
+    CONFIRM_BUTTON: '.confirm-btn',
+}
+
 export const ACTIVE_CLASS = 'active'
 
 export const COMPLETED_CLASS = 'completed'

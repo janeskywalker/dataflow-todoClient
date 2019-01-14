@@ -1,17 +1,39 @@
-export const ul = document.getElementById('item-list')
 
-export const input = document.getElementById('item-input')
+import {Selectors} from './const'
 
-export const buttonCompleted = document.getElementById('button-completed')
 
-export const buttonShowAll = document.getElementById('button-show-all')
+export function getElements(rootSelector) {
 
-export const buttonShowActive = document.getElementById('button-show-active')
+    const root = document.querySelector(rootSelector)
 
-export const buttonClearComplete = document.getElementById('button-clear-completed')
+    export const ul = root.querySelector(Selectors.ITEM_LIST)
 
-export const saveError = document.getElementById('save-error')
+    export const input = root.querySelector(Selectors.INPUT)
 
-export const deleteError = document.getElementById('delete-error')
+    export const buttonCompleted = root.querySelector(Selectors.BUTTON_COMPLETED)
 
-export const countItemLeft = document.getElementById('item-left')
+    export const buttonShowAll = root.querySelector(Selectors.BUTTON_SHOW_ALL)
+
+    export const buttonShowActive = root.querySelector(Selectors.BUTTON_SHOW_ACTIVE)
+
+    export const buttonClearComplete = root.querySelector(Selectors.BUTTON_CLEAR_COMPLETE)
+
+    export const saveError = root.querySelector(Selectors.SAVE_ERROR)
+
+    export const deleteError = root.querySelector(Selectors.DELETE_ERROR)
+
+    export const countItemLeft = root.querySelector(Selectors.COUNT_ITEM_LEFT)
+
+    return {
+        ul, 
+        input,
+        buttonCompleted,
+        buttonShowAll,
+        buttonShowActive,
+        buttonClearComplete,
+        saveError,
+        deleteError,
+        countItemLeft
+    }
+
+}

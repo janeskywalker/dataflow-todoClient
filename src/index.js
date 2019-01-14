@@ -7,10 +7,13 @@ import {render} from './render'
 
 import {showCompletedItem, showActiveItem, showAllItem} from './show.js'
 
-import {DEFAULT_ERROR, Actions} from './const'
+import {DEFAULT_ERROR, Actions, Selectors} from './const'
 
 import {input, buttonCompleted, buttonShowAll, buttonShowActive, 
     buttonClearComplete, saveError} from './elements'
+
+import {app} from './app'
+
 
 
 // data flow:
@@ -22,6 +25,8 @@ export const state = {
     todos: [],
     retryCount: 0,
 }
+
+
 
 //Event
 //const input = document.getElementById('item-input')
@@ -50,7 +55,7 @@ buttonClearComplete.addEventListener('click',(evt) => {
 
 
 //const saveError = document.getElementById('save-error')
-saveError.querySelector('.confirm-btn').addEventListener('click', (evt) => {
+saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
     console.log('newthing:', state.error.data)
     // shall pass state.error.data only?
     updateData(Actions.RETRY_SAVE, state)
