@@ -28,14 +28,15 @@ export function saveTodo(newTodo, state) {
 
         newTodo.id = savedTodo.id
 
+        //state.todos.push(savedTodo)
         state.error = DEFAULT_ERROR
 
         // render(state)
+        console.log('state.todos after saved:', state.todos)
         return state 
         
     }).catch((err) => {
         console.log('error: ', err)
-        state.todos.pop()
 
         // define the error object
         state.error = {

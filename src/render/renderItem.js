@@ -4,7 +4,6 @@ import {Actions} from '../const'
 
 export function renderItem(item, state) {
 
-    // Break this out into "renderItem" function
     const li = document.createElement('li')
     li.innerHTML = item.name
 

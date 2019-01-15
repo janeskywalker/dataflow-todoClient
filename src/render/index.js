@@ -4,6 +4,10 @@ import { renderError } from './renderError'
 
 export function render(state) {
     renderList(state)
-    renderItemLeft(state.todos)
-    renderError(state.error)
+
+    renderItemLeft(state)
+    //renderItemLeft(state.todos, state)
+
+    renderError(state)
+    //renderError(state.error)
 }

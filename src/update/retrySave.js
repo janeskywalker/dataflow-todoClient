@@ -15,6 +15,7 @@ export function retrySave(state) {
 
     // add it to the server side state.todos
     saveTodo(newTodo, state).then((state) => {
+        console.log('state.todos after saved:', state.todos)
         render(state)
     })
 

@@ -9,17 +9,22 @@ export function renderList(state){
     //const ul = document.getElementById('item-list')
 
     //prepare for render - side effects
-    ul.innerHTML = ''
-    input.value = ''
+    state.elements.ul.innerHTML = ''
+    state.elements.input.value = ''
 
     console.log('items:', items)
 
     items.forEach((item) => {
         if (item.added === false || true && item.isDeleted === false) {
+            console.log('item: ', item)
             const li = renderItem(item, state)
 
+            console.log('li: ', li)
+
+            console.log('els: ', state.elements)
+
             // append li to ul
-            ul.appendChild(li)
+            state.elements.ul.appendChild(li)
             item.added = true
         }
     })
