@@ -8,6 +8,12 @@ export const Actions = {
     CLEAR_COMPLETE: 5,
 }
 
+export const Views = {
+    SHOW_ALL: 0,
+    SHOW_COMPLETED: 1,
+    SHOW_ACTIVE: 2,
+}
+
 export const Errors = {
     SAVE: 'saveError',
     DELETE: 'deleteError', 

@@ -24,13 +24,26 @@ export function updateData(how, state, data) {
     switch (how) {
         case Actions.ADD_TODO: {
             // pass render as an argument
-            addTodo(data, state, render)
+            //addTodo(data, state, render)
+
+            // make it here and pass it instead
+            const newTodo = {
+                id: null,
+                name: data.item, 
+                completed: false,
+                isDeleted: false,
+            }
+
+            addTodo.local(newTodo, state, render)
+            addTodo.remote(newTodo, state, render)
             break;
         }
+        
         case Actions.RETRY_SAVE: {
             retrySave(state)
             break;
         }
+
         case Actions.DELETE:{
             //const index = state.todos.indexOf(data.item) 
             //console.log('index:', index)
@@ -53,6 +66,7 @@ export function updateData(how, state, data) {
             complete(id, state)
             break;
         }
+        
         case Actions.UNCOMPLETE: {
             data.item.completed = false
             const id = data.item.id
@@ -60,6 +74,7 @@ export function updateData(how, state, data) {
             uncomplete(id, state)
             break;
         }
+
         case Actions.CLEAR_COMPLETE: {
 
             //clearComplete(state)

@@ -5,7 +5,11 @@ const ajax = Ajax.ajax
 import {DEFAULT_ERROR} from '../const'
 
 
-
+/**
+ * 
+ * @param {object} newTodo 
+ * @param {object} state 
+ */
 export function saveTodo(newTodo, state) {
     const promiseAdd = ajax({
         url: 'http://localhost:4000/api/todos',

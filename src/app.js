@@ -20,8 +20,8 @@ import {getElements} from './elements'
 
 
 export function app(configObj) {
-
     // creating a state
+    // Initial State
     const state = {
         url: configObj.url,
         rootSelector: configObj.rootSelector,
@@ -29,8 +29,8 @@ export function app(configObj) {
         todos: [],
         retryCount: 0,
         elements: null,
+        // viewState: 'show_all' | 'show_completed' | 'show_active'
         //retryPolicy: configObj.retryPolicy
-
     }
 
     state.elements = getElements(configObj.rootSelector)
@@ -40,6 +40,7 @@ export function app(configObj) {
 
     //Event
     state.elements.input.addEventListener('keypress',(evt) => {
+        // debugger
         if (evt.key == 'Enter') {
             const newItem = evt.target.value
             // if (newItem !== '')
@@ -58,7 +59,7 @@ export function app(configObj) {
     state.elements.buttonShowActive.addEventListener('click', () => showActiveItem(state))
 
     //const buttonClearComplete = document.getElementById('button-clear-completed')
-    state.elements.buttonClearComplete.addEventListener('click',(evt) => {
+    state.elements.buttonClearComplete.addEventListener('click', (evt) => {
         updateData(Actions.CLEAR_COMPLETE, state)
     })
 
@@ -75,6 +76,7 @@ export function app(configObj) {
 
 
     // call GET 
+    // Getting initial data
     const promiseGet = ajax({
         url: 'http://localhost:4000/api/todos',
         method: Ajax.GET_METHOD,
