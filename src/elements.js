@@ -24,6 +24,12 @@ export function getElements(rootSelector) {
 
     const countItemLeft = root.querySelector(Selectors.COUNT_ITEM_LEFT)
 
+    const clearCompletedError = root.querySelector(Selectors.CLEAR_COMPLETED_ERROR)
+
+    const completeError = root.querySelector(Selectors.COMPLETE_ERROR)
+
+    const uncompleteError = root.querySelector(Selectors.UNCOMPLETE_ERROR)
+
     return {
         ul, 
         input,
@@ -33,7 +39,10 @@ export function getElements(rootSelector) {
         buttonClearComplete,
         saveError,
         deleteError,
-        countItemLeft
+        countItemLeft, 
+        clearCompletedError,
+        completeError,
+        uncompleteError
     }
 
 }

@@ -5,6 +5,8 @@
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
+import { Errors, DEFAULT_ERROR} from '../const'
+
 
 import { render } from '../render';
 
@@ -29,7 +31,7 @@ export const clearComplete = {
         render(state)
     },
 
-    remote(state) {
+    remote(state, render, retryClearCompleted) {
 
         const completedTodos = state.todos.filter((next) =>{
             return next.completed === true  
@@ -51,14 +53,54 @@ export const clearComplete = {
             method: Ajax.POST_METHOD,
             data: idArr,
         })
+
     
+        // promiseClearComplete.then((todos) => {
+        //     console.log('after CC todos', todos)
+
+        //     render(state)
+        // }).catch((err) => {
+        //     console.log('clearComplete error')
+        //     //renderError()
+
+        //     // make a cc error widget to show
+        //     // call updateDate to retry cc
+        // })
+
+
         promiseClearComplete.then((todos) => {
-            console.log('after CC', todos)
+            console.log('after CC todos', todos)
+
+            state.error = DEFAULT_ERROR
+            state.retryCount = 0
+
             render(state)
         }).catch((err) => {
-            console.log('error')
+
+            console.log('cc error:', err)
             //renderError()
+
+            // make a cc error widget to show
+            // call updateDate to retry cc
+
+            // show error widget
+            state.error = {
+                type: Errors.CLEAR_COMPLETED,
+                data: null
+            }
+
+            render(state)
+
+            // call updateDate to retryDelete
+            state.retryCount += 1
+            const waitTime = 3000 * state.retryCount
+
+            console.log('state.retryCount:', state.retryCount)
+
+            setTimeout(retryClearCompleted, waitTime)
+
         })
+
 
     }
     

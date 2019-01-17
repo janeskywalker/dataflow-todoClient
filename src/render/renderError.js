@@ -17,9 +17,21 @@ export function renderError(state) {
         case Errors.DELETE:
             state.elements.deleteError.classList.add(ACTIVE_CLASS)
             break;
+        case Errors.CLEAR_COMPLETED:
+            state.elements.clearCompletedError.classList.add(ACTIVE_CLASS)
+            break;
+        case Errors.COMPLETE:
+            state.elements.completeError.classList.add(ACTIVE_CLASS)
+            break;
+        case Errors.UNCOMPLETE:
+            state.elements.uncompleteError.classList.add(ACTIVE_CLASS)
+            break;
         default:
             state.elements.saveError.classList.remove(ACTIVE_CLASS)
             state.elements.deleteError.classList.remove(ACTIVE_CLASS)
+            state.elements.clearCompletedError.classList.remove(ACTIVE_CLASS)
+            state.elements.completeError.classList.remove(ACTIVE_CLASS)
+            state.elements.uncompleteError.classList.remove(ACTIVE_CLASS)
             break;
     }
 }

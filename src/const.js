@@ -19,7 +19,7 @@ export const Errors = {
     DELETE: 'deleteError', 
     COMPLETE: 'completeError', 
     UNCOMPLETE: 'uncompleteError',
-    CLEAR_COMPLETE: 'clearComleteError'
+    CLEAR_COMPLETED: 'clearCompleteError'
 }
 
 export const Selectors = {
@@ -33,6 +33,9 @@ export const Selectors = {
     DELETE_ERROR: '#delete-error',
     COUNT_ITEM_LEFT: '#item-left',
     CONFIRM_BUTTON: '.confirm-btn',
+    CLEAR_COMPLETED_ERROR: '#clear-completed-error',
+    COMPLETE_ERROR: '#complete-error',
+    UNCOMPLETE_ERROR: '#uncomplete-error',
 }
 
 export const ACTIVE_CLASS = 'active'
