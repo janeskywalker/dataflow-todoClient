@@ -84,5 +84,21 @@ export function updateData(how, state, data) {
             render(state)
             break
         }
+
+        case Actions.SHOW_ACTIVE: {
+            state.viewState = Views.SHOW_ACTIVE
+            render(state)
+            break;
+        }
+        case Actions.SHOW_ALL: {
+            state.viewState = Views.SHOW_ALL
+            render(state)
+            break;
+        }
+        case Actions.SHOW_COMPLETED: {
+            state.viewState = Views.SHOW_COMPLETED
+            render(state)
+            break;
+        }
     }
 }

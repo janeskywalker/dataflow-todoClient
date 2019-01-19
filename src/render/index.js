@@ -1,10 +1,11 @@
 import { renderList } from './renderList'
 import { renderItemLeft } from './renderItemLeft'
 import { renderError } from './renderError'
-import { toogleViewState } from './toogleViewState'
+
+import { renderUlClass } from './renderUlClass'
 
 export function render(state) {
-    toogleViewState(state)
+    renderUlClass(state)
 
     renderList(state)
 
