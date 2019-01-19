@@ -6,6 +6,9 @@ export const Actions = {
     COMPLETE: 3,
     UNCOMPLETE: 4,
     CLEAR_COMPLETE: 5,
+    SHOW_ACTIVE: 6,
+    SHOW_ALL: 7,
+    SHOW_COMPLETED: 8
 }
 
 export const Views = {
@@ -48,6 +51,8 @@ export const DEFAULT_ERROR = Object.freeze({
     type: 'None',
     data: null,
 })
+
+
 
 // You don't export or import data only to mutate (change) it.
 // export const state = {

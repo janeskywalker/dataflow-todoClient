@@ -7,7 +7,7 @@ import { clearComplete } from './clearComplete'
 import { render } from '../render'
 
 
-import {Actions} from '../const'
+import {Actions, Views} from '../const'
 
 
 export function updateData(how, state, data) {
@@ -80,6 +80,22 @@ export function updateData(how, state, data) {
             clearComplete.remote(state, render, () => {
                 updateData(Actions.CLEAR_COMPLETE, state)
             })
+            break;
+        }
+
+        case Actions.SHOW_ACTIVE: {
+            state.viewState = Views.SHOW_ACTIVE
+            render(state)
+            break;
+        }
+        case Actions.SHOW_ALL: {
+            state.viewState = Views.SHOW_ALL
+            render(state)
+            break;
+        }
+        case Actions.SHOW_COMPLETED: {
+            state.viewState = Views.SHOW_COMPLETED
+            render(state)
             break;
         }
     } 

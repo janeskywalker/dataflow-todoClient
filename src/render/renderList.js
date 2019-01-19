@@ -28,4 +28,4 @@ export function renderList(state){
             item.added = true
         }
     })
-}
+} 

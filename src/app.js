@@ -5,9 +5,9 @@ import {updateData} from './update'
 
 import {render} from './render'
 
-import {showCompletedItem, showActiveItem, showAllItem} from './show.js'
+//import {showCompletedItem, showActiveItem, showAllItem} from './show.js'
 
-import {DEFAULT_ERROR, Actions, Selectors} from './const'
+import {DEFAULT_ERROR, Actions, Selectors, Views} from './const'
 
 // import {input, buttonCompleted, buttonShowAll, buttonShowActive, 
 //     buttonClearComplete, saveError} from './elements'
@@ -29,7 +29,8 @@ export function app(configObj) {
         todos: [],
         retryCount: 0,
         elements: null,
-        // viewState: 'show_all' | 'show_completed' | 'show_active'
+        viewState: Views.SHOW_ALL
+        //viewState: 'show_all' | 'show_completed' | 'show_active'
         //retryPolicy: configObj.retryPolicy
     }
 
@@ -50,13 +51,18 @@ export function app(configObj) {
 
     //const buttonCompleted = document.getElementById('button-completed')
     //state.elements.buttonCompleted.addEventListener('click',showCompletedItem)
-    state.elements.buttonCompleted.addEventListener('click',() => showCompletedItem(state))
+    state.elements.buttonCompleted.addEventListener('click',() => updateData(Actions.SHOW_COMPLETED, state))
 
     //const buttonShowAll = document.getElementById('button-show-all')
-    state.elements.buttonShowAll.addEventListener('click',() => showAllItem(state))
+    state.elements.buttonShowAll.addEventListener('click',() => updateData(Actions.SHOW_ALL, state))
 
     //const buttonShowActive = document.getElementById('button-show-active')
-    state.elements.buttonShowActive.addEventListener('click', () => showActiveItem(state))
+    //state.elements.buttonShowActive.addEventListener('click', () => showActiveItem(state))
+
+    state.elements.buttonShowActive.addEventListener('click', () => updateData(Actions.SHOW_ACTIVE, state))
+
+
+    
 
     //const buttonClearComplete = document.getElementById('button-clear-completed')
     state.elements.buttonClearComplete.addEventListener('click', (evt) => {
