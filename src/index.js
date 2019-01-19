@@ -20,3 +20,30 @@ app({
  * 
  * console.log('whateveer')
  */
+
+
+/**
+ * Data Flow
+ * 
+ * state -> render -> events -> update state -> render
+ *
+ * 
+ * Functional Programming
+ * 
+ * What's a pure function?
+ * A function that doesn't have side effect
+ * A function that returns the same output for same input
+ * 
+ * Pure (stateless) programming
+ * const add = (a, b) => a + b
+ * add(1,2) === 3
+ * 
+ * Stateful programming
+ * let val = 3
+ * const add = (a) => val += a
+ * add(3) === 6
+ * add(3) === 9
+ * add(3) === 12
+ * 
+ * If a function doesn't return anything it is only performing side effects
+ */

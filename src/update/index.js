@@ -6,13 +6,17 @@ import { uncomplete } from './uncomplete'
 import { clearComplete } from './clearComplete'
 import { render } from '../render'
 
-import { Actions, Views } from '../const'
 
-export function updateData(how, state, data) {
-    console.log('how: ', how)
+import {Actions, Views} from '../const'
+
+// How do we change update to be pure?
+// update takes a state and an action and returns the new state
+export function updateData(action, state, data) {
+
+    console.log('action: ', action)
     console.log('state: ', state)
 
-    switch (how) {
+    switch (action) {
         case Actions.ADD_TODO: {
             // pass render as an argument
             //addTodo(data, state, render)

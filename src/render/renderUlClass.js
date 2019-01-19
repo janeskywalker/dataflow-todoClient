@@ -28,7 +28,7 @@ import { ACTIVE_CLASS, COMPLETED_CLASS, Views} from '../const';
 
 
 
-
+// toggleViewState
 export function renderUlClass(state){
     switch (state.viewState) {
         case  Views.SHOW_ACTIVE: {

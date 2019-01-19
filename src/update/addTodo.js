@@ -3,10 +3,21 @@ import { saveTodo } from './saveTodo'
 export const addTodo = {
     // add to the state locally
     local(newTodo, state, render) {
-        // local state.todo and remote state.todo
-        // can not push in here ??????? b/c id is null, also add 2X
-        // but it wont show the newTodo with the error widget
-        state.todos.push(newTodo)
+
+        console.log('oldState: ', state)
+
+        // create a new array that has all old todos and the new Todo
+        // spread operator
+        const newTodos = [ ...state.todos, newTodo ]
+
+        // or do this to copy/merge an object
+        const newState = Object.assign({}, state, {
+            todos: newTodos
+        })
+        console.log('oldState: ', state)
+        console.log('newState: ', newState)
+        
+        // state.todos.push(newTodo)
         console.log('state.todos:', state.todos)
 
         // shall not render here?????
@@ -16,7 +27,8 @@ export const addTodo = {
     // save it to the server
     // call post
     remote(newTodo, state, render) {
-        saveTodo(newTodo, state).then(state => {
+
+        saveTodo(newTodo, state).then((state) => {
             render(state)
         })
     },
