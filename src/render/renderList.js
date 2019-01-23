@@ -1,11 +1,9 @@
+import { ul, input } from '../elements'
+import { renderItem } from './renderItem'
 
-import {ul, input} from '../elements'
-import { renderItem } from './renderItem';
-
-
-export function renderList(state){
+export function renderList(state) {
     const items = state.todos
-    
+
     //const ul = document.getElementById('item-list')
 
     //prepare for render - side effects
@@ -14,8 +12,8 @@ export function renderList(state){
 
     console.log('items:', items)
 
-    items.forEach((item) => {
-        if (item.added === false || true && item.isDeleted === false) {
+    items.forEach(item => {
+        if (item.added === false || (true && item.isDeleted === false)) {
             console.log('item: ', item)
             const li = renderItem(item, state)
 
@@ -28,4 +26,4 @@ export function renderList(state){
             item.added = true
         }
     })
-} 
+}

@@ -1,29 +1,25 @@
-
-
 //import {ajax} from '../ajax'
 
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
-import { Errors, DEFAULT_ERROR} from '../const'
+import { Errors, DEFAULT_ERROR } from '../const'
 
-
-import { render } from '../render';
+import { render } from '../render'
 
 //export function clearComplete(idArr, state) {
 
 export const clearComplete = {
-
     local(state, render) {
         // update locally using filter
         // state.todos = state.todos.filter((next) =>{
-        //     return next.completed === false  
+        //     return next.completed === false
         // })
 
-        // this is better bc it makes your code more resilient 
-        state.todos = state.todos.map((next) => {
-            if(next.completed === true) {
-                next.isDeleted = true 
+        // this is better bc it makes your code more resilient
+        state.todos = state.todos.map(next => {
+            if (next.completed === true) {
+                next.isDeleted = true
             }
             return next
         })
@@ -32,78 +28,59 @@ export const clearComplete = {
     },
 
     remote(state, render, retryClearCompleted) {
-
-        const completedTodos = state.todos.filter((next) =>{
-            return next.completed === true  
+        const completedTodos = state.todos.filter(next => {
+            return next.completed === true
         })
         console.log('completedTodos', completedTodos)
 
         const idArr = {
-            arr: []
+            arr: [],
         }
 
-        completedTodos.forEach((next) => idArr.arr.push(next.id))
+        completedTodos.forEach(next => idArr.arr.push(next.id))
 
         console.log('idArr.arr', idArr.arr)
 
-
         // call post to send data, not delete
         const promiseClearComplete = ajax({
-            url: 'http://localhost:4000/api/todos/clearcompleted',
+            //url: 'http://localhost:4000/api/todos/clearcompleted',
+            url: state.url + '/api/todos/clearcompleted',
+
             method: Ajax.POST_METHOD,
             data: idArr,
         })
 
-    
-        // promiseClearComplete.then((todos) => {
-        //     console.log('after CC todos', todos)
+        promiseClearComplete
+            .then(todos => {
+                console.log('after CC todos', todos)
 
-        //     render(state)
-        // }).catch((err) => {
-        //     console.log('clearComplete error')
-        //     //renderError()
+                state.error = DEFAULT_ERROR
+                state.retryCount = 0
 
-        //     // make a cc error widget to show
-        //     // call updateDate to retry cc
-        // })
+                render(state)
+            })
+            .catch(err => {
+                console.log('cc error:', err)
+                //renderError()
 
+                // make a cc error widget to show
+                // call updateDate to retry cc
 
-        promiseClearComplete.then((todos) => {
-            console.log('after CC todos', todos)
+                // show error widget
+                state.error = {
+                    type: Errors.CLEAR_COMPLETED,
+                    data: null,
+                }
 
-            state.error = DEFAULT_ERROR
-            state.retryCount = 0
+                render(state)
 
-            render(state)
-        }).catch((err) => {
+                // call updateDate to retryDelete
+                state.retryCount += 1
+                const waitTime = 3000 * state.retryCount
 
-            console.log('cc error:', err)
-            //renderError()
+                console.log('state.retryCount:', state.retryCount)
 
-            // make a cc error widget to show
-            // call updateDate to retry cc
-
-            // show error widget
-            state.error = {
-                type: Errors.CLEAR_COMPLETED,
-                data: null
-            }
-
-            render(state)
-
-            // call updateDate to retryDelete
-            state.retryCount += 1
-            const waitTime = 3000 * state.retryCount
-
-            console.log('state.retryCount:', state.retryCount)
-
-            setTimeout(retryClearCompleted, waitTime)
-
-        })
-
-
-    }
-    
+                setTimeout(retryClearCompleted, waitTime)
+            })
+    },
 }
-
-

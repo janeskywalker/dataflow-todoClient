@@ -1,20 +1,14 @@
-
-
-
 //import {ajax} from '../ajax'
 
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
+import { render } from '../render'
 
-import { render } from '../render';
-
-import { Errors, DEFAULT_ERROR} from '../const'
-
-
+import { Errors, DEFAULT_ERROR } from '../const'
 
 export const uncomplete = {
-    local(data, state){
+    local(data, state) {
         data.item.completed = false
         render(state)
     },
@@ -23,37 +17,37 @@ export const uncomplete = {
         const id = data.item.id
 
         var promiseUncomplete = ajax({
-                    url: `http://localhost:4000/api/todos/${id}/uncomplete`,
-                    method: Ajax.PUT_METHOD, 
-                    data: null, 
-                })
-            
-                promiseUncomplete.then((todos) => {
-                    console.log(todos)
+            //url: `http://localhost:4000/api/todos/${id}/uncomplete`,
+            url: state.url + `/api/todos/${id}/uncomplete`,
+            method: Ajax.PUT_METHOD,
+            data: null,
+        })
 
-                    state.error = DEFAULT_ERROR
-                    state.retryCount = 0
-                    render(state)
-                }).catch((err) => {
-                    console.log('error')
+        promiseUncomplete
+            .then(todos => {
+                console.log(todos)
 
-                    state.error = {
-                        type: Errors.UNCOMPLETE,
-                        date: null
-                    }
-                    render(state)
+                state.error = DEFAULT_ERROR
+                state.retryCount = 0
+                render(state)
+            })
+            .catch(err => {
+                console.log('error')
 
-                    state.retryCount +=1
-                    console.log(state.retryCount)
+                state.error = {
+                    type: Errors.UNCOMPLETE,
+                    date: null,
+                }
+                render(state)
 
-                    const waitTime = state.retryCount * 3000 
-                    setTimeout(retryUncomplete, waitTime)
-                })
-    }
+                state.retryCount += 1
+                console.log(state.retryCount)
+
+                const waitTime = state.retryCount * 3000
+                setTimeout(retryUncomplete, waitTime)
+            })
+    },
 }
-
-
-
 
 // I would suggest exporting an object like this:
 // export const uncomplete = {
