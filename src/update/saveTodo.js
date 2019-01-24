@@ -17,41 +17,38 @@ export function saveTodo(newTodo, state) {
 
         retryPolicy: {
             maxRetries: 3,
-            waitTime: 1000,
-            timeout: 30000,
-        },
-
-        //retryPolicy: null
+            waitTime: 1000, 
+            timeout: 30000
+        }
     })
 
-    return promiseAdd
-        .then(savedTodo => {
-            console.log(savedTodo)
-            // update locally
-            // add the id to client side state.todos
+    return promiseAdd.then((savedTodo) => {
+        console.log('savedTodo:', savedTodo)
+        // update locally
+        // add the id to client side state.todos
 
-            newTodo.id = savedTodo.id
+        newTodo.id = savedTodo.id
 
-            //state.todos.push(savedTodo)
-            state.error = DEFAULT_ERROR
+        //state.todos.push(savedTodo)
+        state.error = DEFAULT_ERROR
 
-            // render(state)
-            console.log('state.todos after saved:', state.todos)
-            return state
-        })
-        .catch(err => {
-            console.log('error: ', err)
+        // render(state)
+        console.log('state.todos after saved:', state.todos)
+        return state 
+        
+    }).catch((err) => {
+        console.log('error: ', err)
 
-            // define the error object
-            state.error = {
-                type: 'saveError',
-                data: newTodo,
-            }
+        // define the error object
+        state.error = {
+            type: 'saveError',
+            data: newTodo
+        }
 
-            console.log(state.error.data)
-            console.log('state:', state)
+        console.log(state.error.data)
+        console.log('state:', state)
 
-            // render(state)
-            return state
-        })
+        // render(state)
+        return state 
+    })
 }

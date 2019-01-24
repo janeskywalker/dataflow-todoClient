@@ -1,7 +1,12 @@
 import { ul, input } from '../elements'
 import { renderItem } from './renderItem'
 
-export function renderList(state) {
+import {ul, input} from '../elements'
+import { renderItem } from './renderItem';
+
+
+export function renderList(state){
+
     const items = state.todos
 
     //const ul = document.getElementById('item-list')

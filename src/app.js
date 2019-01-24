@@ -17,16 +17,12 @@ import {getElements} from './elements'
 
 
 
-const onSelector = require('onselector').onSelector
-console.log('onSelector:', onSelector)
-
-
-
+// app should be the only thing that knows about updateDate and render
 
 export function app(configObj) {
     // creating a state
     // Initial State
-    const state = {
+    let state = {
         url: configObj.url,
         rootSelector: configObj.rootSelector,
         error: DEFAULT_ERROR,
@@ -46,10 +42,15 @@ export function app(configObj) {
     //Event
     state.elements.input.addEventListener('keypress',(evt) => {
         // debugger
+
         if (evt.key == 'Enter') {
             const newItem = evt.target.value
             // if (newItem !== '')
-            updateData(Actions.ADD_TODO, state, {item: newItem})
+
+            const newState = updateData(Actions.ADD_TODO, state, {item: newItem})
+            state = Object.assign({}, state, newState)
+            
+            render(state)
         }
     })
 

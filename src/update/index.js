@@ -29,9 +29,13 @@ export function updateData(action, state, data) {
                 isDeleted: false,
             }
 
-            addTodo.local(newTodo, state, render)
+            const newState = addTodo.local(newTodo, state, render)
+            console.log('newState:',newState )
+            
             addTodo.remote(newTodo, state, render)
-            break
+            
+            return newState
+            //break;
         }
 
         case Actions.RETRY_SAVE: {
@@ -104,5 +108,7 @@ export function updateData(action, state, data) {
             render(state)
             break;
         }
-    }
+        
+    } 
+    return newState
 }

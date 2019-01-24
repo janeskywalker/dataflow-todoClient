@@ -38,7 +38,7 @@ app({
  * const add = (a, b) => a + b
  * add(1,2) === 3
  * 
- * Stateful programming
+ * Stateful programming (function relies on a state outside of the function)
  * let val = 3
  * const add = (a) => val += a
  * add(3) === 6

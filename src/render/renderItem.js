@@ -2,6 +2,7 @@ import { updateData } from '../update'
 import { Actions } from '../const'
 
 export function renderItem(item, state) {
+    console.log('item:', item)
     const li = document.createElement('li')
     li.innerHTML = item.name
 

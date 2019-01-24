@@ -4,6 +4,10 @@ export const addTodo = {
     // add to the state locally
     local(newTodo, state, render) {
 
+        // push is stateful, map, reduce, filter are not
+        // state.todos.push(newTodo)
+        console.log('state.todos:', state.todos)
+
         console.log('oldState: ', state)
 
         // create a new array that has all old todos and the new Todo
@@ -14,14 +18,11 @@ export const addTodo = {
         const newState = Object.assign({}, state, {
             todos: newTodos
         })
-        console.log('oldState: ', state)
+        //console.log('oldState: ', state)
         console.log('newState: ', newState)
         
-        // state.todos.push(newTodo)
-        console.log('state.todos:', state.todos)
-
-        // shall not render here?????
-        render(state)
+        return newState
+        //render(state)
     },
 
     // save it to the server
@@ -29,7 +30,7 @@ export const addTodo = {
     remote(newTodo, state, render) {
 
         saveTodo(newTodo, state).then((state) => {
-            render(state)
+            //render(state)
         })
     },
 }
