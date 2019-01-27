@@ -4,13 +4,12 @@ import { renderError } from './renderError'
 
 import { renderUlClass } from './renderUlClass'
 
-export function render(state) {
+export function render(state, messages) {
     renderUlClass(state)
 
-    renderList(state)
+    renderList(state, messages)
 
     renderItemLeft(state)
-    //renderItemLeft(state.todos, state)
 
     renderError(state)
     //renderError(state.error)

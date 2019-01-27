@@ -23,6 +23,8 @@ export function app(configObj) {
     // creating a state
     // Initial State
     let state = {
+        // nextlocalId -- state keeps track on everything(incl. this onelocalId)
+        currentId: 0, 
         url: configObj.url,
         rootSelector: configObj.rootSelector,
         error: DEFAULT_ERROR,
@@ -38,8 +40,16 @@ export function app(configObj) {
 
     console.log('state:', state)
 
+    // All action flow through here
+    // everywhere updateData is called, replace it with messsages
+    function messages(action, data) {
+        state = updateData(action, state, data, messages)
+        render(state, messages)
+    }
 
-    //Event
+
+    // Event
+    // For every event there is an Action (99% true)
     state.elements.input.addEventListener('keypress',(evt) => {
         // debugger
 
@@ -47,28 +57,20 @@ export function app(configObj) {
             const newItem = evt.target.value
             // if (newItem !== '')
 
-            state = updateData(Actions.ADD_TODO, state, {item: newItem})
-            render(state)
+            messages(Actions.ADD_TODO, {item: newItem})
         }
     })
 
-    //const buttonCompleted = document.getElementById('button-completed')
-    //state.elements.buttonCompleted.addEventListener('click',showCompletedItem)
-    //state.elements.buttonCompleted.addEventListener('click',() => updateData(Actions.SHOW_COMPLETED, state))
 
     state.elements.buttonCompleted.addEventListener('click',() => {
         state = updateData(Actions.SHOW_COMPLETED, state)
         render(state)
     })
 
-    //const buttonShowAll = document.getElementById('button-show-all')
     state.elements.buttonShowAll.addEventListener('click',() => {
         state = updateData(Actions.SHOW_ALL, state)
         render(state)
     })
-
-    //const buttonShowActive = document.getElementById('button-show-active')
-    //state.elements.buttonShowActive.addEventListener('click', () => showActiveItem(state))
 
     state.elements.buttonShowActive.addEventListener('click', () => {
         state = updateData(Actions.SHOW_ACTIVE, state)
@@ -76,22 +78,16 @@ export function app(configObj) {
     })
 
 
-    
-
-    //const buttonClearComplete = document.getElementById('button-clear-completed')
     state.elements.buttonClearComplete.addEventListener('click', (evt) => {
         state = updateData(Actions.CLEAR_COMPLETE, state)
         render(state)
     })
 
-    //const saveError = document.getElementById('save-error')
     state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
         console.log('newthing:', state.error.data)
         // shall pass state.error.data only?
         updateData(Actions.RETRY_SAVE, state)
     })
-
-    //const deleteError = document.getElementById('delete-error')
 
 
 

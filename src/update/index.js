@@ -24,12 +24,16 @@ export function updateData(action, state, data) {
             // make it here and pass it instead
             const newTodo = {
                 id: null,
-                name: data.item,
+                localId: state.currentId, // So we can update 'id' later
+                name: data.item, 
                 completed: false,
                 isDeleted: false,
             }
 
-            const newState = addTodo.local(newTodo, state, render)
+            // Update id for next time
+            const stateWithUpdatedId = Object.assign({}, state, { currentId: state.currentId += 1 })
+
+            const newState = addTodo.local(newTodo, stateWithUpdatedId, render)
             console.log('newState:',newState )
             
             addTodo.remote(newTodo, state, render)

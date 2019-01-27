@@ -3,7 +3,8 @@ import {Actions} from '../const'
 import { render } from '.';
 
 
-export function renderItem(item, state) {
+// renderItem (and all render function) should update to take messages
+export function renderItem(item, state, messages) {
     debugger
     console.log('item:', item)
     const li = document.createElement('li')
@@ -13,8 +14,7 @@ export function renderItem(item, state) {
     button.innerHTML = 'x'
     li.appendChild(button)
     button.addEventListener('click', (evt) => {
-        state = updateData(Actions.DELETE, state, {item: item})
-        render(state)
+        messages(Actions.DELETE, {item: item})
     })
 
     const checkbox = document.createElement('input')

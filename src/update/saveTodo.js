@@ -22,21 +22,31 @@ export function saveTodo(newTodo, state) {
         }
     })
 
+    // you can not return a newState from a promise 
     return promiseAdd.then((savedTodo) => {
         console.log('savedTodo:', savedTodo)
         // update locally
         // add the id to client side state.todos
 
+        // mutating state
         newTodo.id = savedTodo.id
 
+        // mutating state, should have been saving and calling messages 
         //state.todos.push(savedTodo)
         state.error = DEFAULT_ERROR
 
         // render(state)
         console.log('state.todos after saved:', state.todos)
-        return state 
+        return state
+
+        // messages(Actions.UPDATE_ID, savedTodo)
+
+        // messages(Actions.UPDATE_NEW_ERROR, DEFAULT_ERROR)
         
     }).catch((err) => {
+
+        // messages(Actioon.UPDATA_, xxx)
+
         console.log('error: ', err)
 
         // define the error object

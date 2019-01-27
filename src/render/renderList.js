@@ -5,7 +5,7 @@ import {ul, input} from '../elements'
 import { renderItem } from './renderItem';
 
 
-export function renderList(state){
+export function renderList(state, messages){
 
     const items = state.todos
 
@@ -20,7 +20,7 @@ export function renderList(state){
     items.forEach(item => {
         if (item.added === false || (true && item.isDeleted === false)) {
             console.log('item: ', item)
-            const li = renderItem(item, state)
+            const li = renderItem(item, state, messages)
 
             console.log('li: ', li)
 

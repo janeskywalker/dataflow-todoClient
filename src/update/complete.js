@@ -61,13 +61,8 @@ export const complete = {
                 state.retryCount += 1
                 const waitTime = 3000 * state.retryCount
 
-                // increment again??????
-                //state.retryCount += 1
-                console.log('state.retryCount:', state.retryCount)
+            // messages(Action.RETRY_COMPLETE, )
+        })
 
-                // can i pass data here????????
-                // if i dont wanna wait, but just call it right away
-                setTimeout(retryComplete, waitTime)
-            })
-    },
+    }
 }
