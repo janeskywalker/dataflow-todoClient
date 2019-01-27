@@ -16,15 +16,29 @@ export const clearComplete = {
         //     return next.completed === false
         // })
 
-        // this is better bc it makes your code more resilient
-        state.todos = state.todos.map(next => {
-            if (next.completed === true) {
-                next.isDeleted = true
+        // this is better bc it makes your code more resilient 
+
+        // state.todos = state.todos.map((next) => {
+        //     if(next.completed === true) {
+        //         next.isDeleted = true 
+        //     }
+        //     return next
+        // })
+        //console.log('isDeleted:', state.todos)
+        //render(state)
+
+        const newTodos = state.todos.map((todo) => {
+            debugger
+            if(todo.completed === true) {
+                const newTodo = Object.assign({}, todo, {isDeleted: true})     
+                return newTodo
             }
-            return next
+            return todo
         })
-        console.log('isDeleted:', state.todos)
-        render(state)
+
+        const newState = Object.assign({}, state, {todos: newTodos})
+        return newState
+
     },
 
     remote(state, render, retryClearCompleted) {

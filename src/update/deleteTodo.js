@@ -12,10 +12,21 @@ import { Errors, DEFAULT_ERROR } from '../const'
 export const deleteTodo = {
     local(data, state) {
         // delete it locally
-        // filter is better than splice
-        state.todos = state.todos.filter(next => next !== data.item)
-        console.log('state.todo:', state.todo)
-        render(state)
+        // filter is better than splice 
+
+        // state.todos = state.todos.filter((next) => next !== data.item)
+        // console.log('state.todo:', state.todo)
+        // render(state)
+        const newTodos = state.todos.filter((next) => next !== data.item)
+
+        const newState = Object.assign({}, state, {
+            todos: newTodos
+        })
+
+        //console.log('state.todo:', state.todo)
+        console.log('newState:', newState)
+        
+        return newState
     },
 
     remote(data, state, retryDelete) {
@@ -44,10 +55,7 @@ export const deleteTodo = {
                 state.error = DEFAULT_ERROR
                 state.retryCount = 0
 
-                render(state)
-            })
-            .catch(err => {
-                console.log(err)
+            //render(state)
 
                 // show error widget
                 state.error = {
@@ -57,9 +65,7 @@ export const deleteTodo = {
 
                 render(state)
 
-                // call updateDate to retryDelete
-                state.retryCount += 1
-                const waitTime = 3000 * state.retryCount
+            //render(state)
 
                 // increment again??????
                 //state.retryCount += 1

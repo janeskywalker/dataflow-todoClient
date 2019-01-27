@@ -1,7 +1,10 @@
-import { updateData } from '../update'
-import { Actions } from '../const'
+import {updateData} from '../update' 
+import {Actions} from '../const'
+import { render } from '.';
+
 
 export function renderItem(item, state) {
+    debugger
     console.log('item:', item)
     const li = document.createElement('li')
     li.innerHTML = item.name
@@ -9,8 +12,9 @@ export function renderItem(item, state) {
     const button = document.createElement('button')
     button.innerHTML = 'x'
     li.appendChild(button)
-    button.addEventListener('click', evt => {
-        updateData(Actions.DELETE, state, { item: item })
+    button.addEventListener('click', (evt) => {
+        state = updateData(Actions.DELETE, state, {item: item})
+        render(state)
     })
 
     const checkbox = document.createElement('input')
@@ -26,9 +30,12 @@ export function renderItem(item, state) {
     checkbox.addEventListener('click', evt => {
         console.log('item: ', item)
         if (item.completed === false) {
-            updateData(Actions.COMPLETE, state, { item: item })
-        } else {
-            updateData(Actions.UNCOMPLETE, state, { item: item })
+            state = updateData(Actions.COMPLETE, state, {item: item})
+            render(state)
+        }
+        else {
+            state = updateData(Actions.UNCOMPLETE, state, {item: item})
+            render(state)
         }
     })
 

@@ -5,12 +5,30 @@ const ajax = Ajax.ajax
 
 import { render } from '../render'
 
-import { Errors, DEFAULT_ERROR } from '../const'
+
+import { Errors, DEFAULT_ERROR} from '../const'
+
 
 export const complete = {
     local(data, state) {
-        data.item.completed = true
-        render(state)
+        // this still mutate state:
+        //data.item.completed = true
+        //render(state)
+
+        const newTodos = state.todos.map((todo) => {
+            if(todo.id === data.item.id) {
+                // this still mutate state:
+                // todo.completed = true
+                const newTodo = Object.assign({}, todo, {completed: true}) 
+                return newTodo
+            }
+            return todo
+        })
+        
+        const newState = Object.assign({}, state, {todos: newTodos})
+        console.log('newState:', newState)
+        return newState
+        
     },
 
     remote(data, state, retryComplete) {
@@ -26,15 +44,10 @@ export const complete = {
         promiseComplete
             .then(todos => {
                 console.log(todos)
-
-                // getting rid of the error message
-                state.error = DEFAULT_ERROR
-                state.retryCount = 0
-
-                render(state)
-            })
-            .catch(err => {
-                console.log('error')
+            //render(state)
+        }).catch((err) => {
+            console.log('error')
+            //render(state)
 
                 // show error widget
                 state.error = {

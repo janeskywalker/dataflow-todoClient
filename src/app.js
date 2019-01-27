@@ -47,31 +47,41 @@ export function app(configObj) {
             const newItem = evt.target.value
             // if (newItem !== '')
 
-            const newState = updateData(Actions.ADD_TODO, state, {item: newItem})
-            state = Object.assign({}, state, newState)
-            
+            state = updateData(Actions.ADD_TODO, state, {item: newItem})
             render(state)
         }
     })
 
     //const buttonCompleted = document.getElementById('button-completed')
     //state.elements.buttonCompleted.addEventListener('click',showCompletedItem)
-    state.elements.buttonCompleted.addEventListener('click',() => updateData(Actions.SHOW_COMPLETED, state))
+    //state.elements.buttonCompleted.addEventListener('click',() => updateData(Actions.SHOW_COMPLETED, state))
+
+    state.elements.buttonCompleted.addEventListener('click',() => {
+        state = updateData(Actions.SHOW_COMPLETED, state)
+        render(state)
+    })
 
     //const buttonShowAll = document.getElementById('button-show-all')
-    state.elements.buttonShowAll.addEventListener('click',() => updateData(Actions.SHOW_ALL, state))
+    state.elements.buttonShowAll.addEventListener('click',() => {
+        state = updateData(Actions.SHOW_ALL, state)
+        render(state)
+    })
 
     //const buttonShowActive = document.getElementById('button-show-active')
     //state.elements.buttonShowActive.addEventListener('click', () => showActiveItem(state))
 
-    state.elements.buttonShowActive.addEventListener('click', () => updateData(Actions.SHOW_ACTIVE, state))
+    state.elements.buttonShowActive.addEventListener('click', () => {
+        state = updateData(Actions.SHOW_ACTIVE, state)
+        render()
+    })
 
 
     
 
     //const buttonClearComplete = document.getElementById('button-clear-completed')
     state.elements.buttonClearComplete.addEventListener('click', (evt) => {
-        updateData(Actions.CLEAR_COMPLETE, state)
+        state = updateData(Actions.CLEAR_COMPLETE, state)
+        render(state)
     })
 
     //const saveError = document.getElementById('save-error')

@@ -44,68 +44,73 @@ export function updateData(action, state, data) {
             break
         }
 
-        case Actions.DELETE: {
-            deleteTodo.local(data, state)
+        case Actions.DELETE:{
+          
+            //deleteTodo.local(data, state)
+
+            const newState = deleteTodo.local(data, state)
+
             deleteTodo.remote(data, state, () => {
                 updateData(Actions.DELETE, state, data)
             })
-            break
+
+            return newState
+            //break;
         }
 
         case Actions.COMPLETE: {
-            complete.local(data, state)
+            //complete(id, state)
+            const newState = complete.local(data, state)
             complete.remote(data, state, () => {
                 updateData(Actions.COMPLETE, state, data)
             })
-            break
+            
+            return newState
+            //break;
         }
 
         case Actions.UNCOMPLETE: {
-            uncomplete.local(data, state)
+            const newState = uncomplete.local(data, state)
             uncomplete.remote(data, state, () => {
                 updateData(Actions.UNCOMPLETE, state, data)
             })
 
-            break
+            return newState
+            //break;
         }
 
         case Actions.CLEAR_COMPLETE: {
-            clearComplete.local(state, render)
+
+            const newState = clearComplete.local(state, render)
             clearComplete.remote(state, render, () => {
                 updateData(Actions.CLEAR_COMPLETE, state)
             })
-            break
+            return newState
+            break;
         }
 
         case Actions.SHOW_ACTIVE: {
-            state.viewState = Views.SHOW_ACTIVE
-            render(state)
-            break
-        }
-        case Actions.SHOW_ALL: {
-            state.viewState = Views.SHOW_ALL
-            render(state)
-            break
-        }
-        case Actions.SHOW_COMPLETED: {
-            state.viewState = Views.SHOW_COMPLETED
-            render(state)
-            break
-        }
+            //state.viewState = Views.SHOW_ACTIVE
+            //render(state)
+            const newState = Object.assign({}, state, {viewState: Views.SHOW_ACTIVE})
+            return newState
 
-        case Actions.SHOW_ACTIVE: {
-            state.viewState = Views.SHOW_ACTIVE
-            render(state)
             break;
         }
         case Actions.SHOW_ALL: {
-            state.viewState = Views.SHOW_ALL
-            render(state)
+            //state.viewState = Views.SHOW_ALL
+            //render(state)
+
+            const newState = Object.assign({}, state, {viewState: Views.SHOW_ALL})
+            return newState
             break;
         }
         case Actions.SHOW_COMPLETED: {
-            state.viewState = Views.SHOW_COMPLETED
-            render(state)
+            //state.viewState = Views.SHOW_COMPLETED
+            //render(state)
+
+            const newState = Object.assign({}, state, {viewState: Views.SHOW_COMPLETED})
+            return newState
             break;
         }
         
