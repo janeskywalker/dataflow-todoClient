@@ -8,7 +8,9 @@ export const Actions = {
     CLEAR_COMPLETE: 5,
     SHOW_ACTIVE: 6,
     SHOW_ALL: 7,
-    SHOW_COMPLETED: 8
+    SHOW_COMPLETED: 8,
+    UPDATE_ID_ERROR: 9,
+    UPDATE_SAVE_ERROR: 10,
 }
 
 export const Views = {

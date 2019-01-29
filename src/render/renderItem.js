@@ -4,8 +4,7 @@ import { render } from '.';
 
 
 // renderItem (and all render function) should update to take messages
-export function renderItem(item, state, messages) {
-    debugger
+export function renderItem(item, state, messages) {  
     console.log('item:', item)
     const li = document.createElement('li')
     li.innerHTML = item.name

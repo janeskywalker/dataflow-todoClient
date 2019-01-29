@@ -43,6 +43,7 @@ export function app(configObj) {
     // All action flow through here
     // everywhere updateData is called, replace it with messsages
     function messages(action, data) {
+        console.log('calling messages')
         state = updateData(action, state, data, messages)
         render(state, messages)
     }
@@ -86,7 +87,8 @@ export function app(configObj) {
     state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
         console.log('newthing:', state.error.data)
         // shall pass state.error.data only?
-        updateData(Actions.RETRY_SAVE, state)
+        //updateData(Actions.RETRY_SAVE, state)
+        messages(Actions.RETRY_SAVE)
     })
 
 

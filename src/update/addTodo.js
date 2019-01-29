@@ -3,7 +3,7 @@ import { saveTodo } from './saveTodo'
 export const addTodo = {
     // add to the state locally
     local(newTodo, state) {
-
+        debugger
         // push is stateful, map, reduce, filter are not
         // state.todos.push(newTodo)
         console.log('state.todos:', state.todos)
@@ -27,9 +27,9 @@ export const addTodo = {
 
     // save it to the server
     // call post
-    remote(newTodo, state) {
+    remote(newTodo, state, messages) {
 
-        saveTodo(newTodo, state).then((state) => {
+        saveTodo(newTodo, state, messages).then((state) => {
             //render(state)
         })
     },

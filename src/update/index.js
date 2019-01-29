@@ -5,13 +5,16 @@ import { complete } from './complete'
 import { uncomplete } from './uncomplete'
 import { clearComplete } from './clearComplete'
 import { render } from '../render'
+import { updateIdError } from './updateIdError'
 
+import { updateSaveError } from './updateSaveError'
 
 import {Actions, Views} from '../const'
+import { saveTodo } from './saveTodo';
 
 // How do we change update to be pure?
 // update takes a state and an action and returns the new state
-export function updateData(action, state, data) {
+export function updateData(action, state, data, messages) {
 
     console.log('action: ', action)
     console.log('state: ', state)
@@ -22,6 +25,7 @@ export function updateData(action, state, data) {
             //addTodo(data, state, render)
 
             // make it here and pass it instead
+            debugger
             const newTodo = {
                 id: null,
                 localId: state.currentId, // So we can update 'id' later
@@ -36,27 +40,39 @@ export function updateData(action, state, data) {
             const newState = addTodo.local(newTodo, stateWithUpdatedId, render)
             console.log('newState:',newState )
             
-            addTodo.remote(newTodo, state, render)
+            addTodo.remote(newTodo, state, messages)
             
             return newState
             //break;
         }
 
+        case Actions.UPDATE_ID_ERROR: {
+             const newState = updateIdError.local(state, data)
+             return newState
+        }
+
+
+       case Actions.UPDATE_SAVE_ERROR: {
+        const newState = updateSaveError.local(state, data)
+        return newState
+   }
+
+
+        
         case Actions.RETRY_SAVE: {
             //retrySave(state)
-            retrySave.remote(state)
-            break
+            retrySave.remote(state, messages)
+            break;
         }
 
         case Actions.DELETE:{
-          
-            //deleteTodo.local(data, state)
-
             const newState = deleteTodo.local(data, state)
 
             deleteTodo.remote(data, state, () => {
                 updateData(Actions.DELETE, state, data)
             })
+
+            //deleteTodo.remote(data, state, messages)
 
             return newState
             //break;

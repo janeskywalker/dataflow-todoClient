@@ -29,7 +29,7 @@ export const deleteTodo = {
         return newState
     },
 
-    remote(data, state, retryDelete) {
+    remote(data, state, messages, retryDelete) {
         const id = data.item.id
         console.log('id:', id)
 
@@ -56,6 +56,7 @@ export const deleteTodo = {
                 state.retryCount = 0
 
             //render(state)
+            //messages(Actions.update_Error, {error: DEFAULT_ERROR, retryCount:0 })
 
                 // show error widget
                 state.error = {
@@ -63,7 +64,11 @@ export const deleteTodo = {
                     data: null,
                 }
 
-                render(state)
+            //show error widget
+            state.error = {
+                type: Errors.DELETE,
+                data: null
+            }
 
             //render(state)
 
@@ -71,9 +76,24 @@ export const deleteTodo = {
                 //state.retryCount += 1
                 console.log('state.retryCount:', state.retryCount)
 
-                // can i pass data here????????
-                // if i dont wanna wait, but just call it right away
-                setTimeout(retryDelete, waitTime)
-            })
-    },
-}
+            // increment again??????
+            //state.retryCount += 1
+            console.log('state.retryCount:', state.retryCount)
+
+             // can i pass data here????????
+             // if i dont wanna wait, but just call it right away
+
+            //  messages(Actions.UPDATE_DELETE_ERROR, 
+            //     { retryCount: state.retryCount + 1, 
+            //       error: {
+            //             type: Errors.DELETE,
+            //             data: null
+            //       }
+            //     }
+            // )
+
+            setTimeout(retryDelete, waitTime)
+        })
+
+    }
+} 
