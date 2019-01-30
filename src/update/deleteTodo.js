@@ -3,20 +3,21 @@
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
-import { render } from '../render/index'
-import { Errors, DEFAULT_ERROR } from '../const'
+import {Actions} from '../const'
+
+
+import {render} from '../render/index'
+import { Errors, DEFAULT_ERROR} from '../const'
 
 // This pattern of a function taking the next function to call
 // as an argument is called continuation passing
 
-export const deleteTodo = {
-    local(data, state) {
-        // delete it locally
-        // filter is better than splice 
 
-        // state.todos = state.todos.filter((next) => next !== data.item)
-        // console.log('state.todo:', state.todo)
-        // render(state)
+
+export const deleteTodo = { 
+    local(data, state) {
+
+        console.log('data:', data)
         const newTodos = state.todos.filter((next) => next !== data.item)
 
         const newState = Object.assign({}, state, {
@@ -29,7 +30,8 @@ export const deleteTodo = {
         return newState
     },
 
-    remote(data, state, messages, retryDelete) {
+    remote(data, state, messages) {
+        
         const id = data.item.id
         console.log('id:', id)
 
@@ -56,43 +58,40 @@ export const deleteTodo = {
                 state.retryCount = 0
 
             //render(state)
-            //messages(Actions.update_Error, {error: DEFAULT_ERROR, retryCount:0 })
 
-                // show error widget
-                state.error = {
-                    type: Errors.DELETE,
-                    data: null,
-                }
+            //messages(Actions.UPDATE_NONE_ERROR, {error: DEFAULT_ERROR, retryCount: 0})
+
+            // only pass data that is necessary
+            messages(Actions.UPDATE_NONE_ERROR)
+
+        }).catch((err) => {
+            console.log('err:', err)
 
             //show error widget
-            state.error = {
-                type: Errors.DELETE,
-                data: null
-            }
+            // state.error = {
+            //     type: Errors.DELETE,
+            //     data: null
+            // }
 
             //render(state)
 
-                // increment again??????
-                //state.retryCount += 1
-                console.log('state.retryCount:', state.retryCount)
+            //console.log('state.retryCount:', state.retryCount)
 
-            // increment again??????
-            //state.retryCount += 1
-            console.log('state.retryCount:', state.retryCount)
 
-             // can i pass data here????????
-             // if i dont wanna wait, but just call it right away
+            //setTimeout(retryDelete, waitTime)
 
-            //  messages(Actions.UPDATE_DELETE_ERROR, 
-            //     { retryCount: state.retryCount + 1, 
-            //       error: {
+
+            // messages(Actions.RETRY_DELETE, 
+            //     {   retryCount: state.retryCount + 1,
+            //         error: {
             //             type: Errors.DELETE,
-            //             data: null
-            //       }
+            //             data: data
+            //         }
             //     }
             // )
 
-            setTimeout(retryDelete, waitTime)
+            // only pass data that is necessary
+            messages(Actions.RETRY_DELETE, data)
         })
 
     }

@@ -28,7 +28,7 @@ export function saveTodo(newTodo, state, messages) {
     // you can not return a newState from a promise 
     return promiseAdd.then((savedTodo) => {
         console.log('savedTodo:', savedTodo)
-        debugger
+       
         // update locally
         // add the id to client side state.todos
 

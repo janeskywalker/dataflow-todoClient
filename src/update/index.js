@@ -1,13 +1,16 @@
-import { addTodo } from './addTodo'
+import { addTodo } from './addTodo' 
+import { updateIdError } from './updateIdError'
+import { updateSaveError } from './updateSaveError'
 import { retrySave } from './retrySave'
+
 import { deleteTodo } from './deleteTodo'
+import { updateNoneError} from './updateNoneError'
+import { retryDelete } from './retryDelete'
+
 import { complete } from './complete'
 import { uncomplete } from './uncomplete'
 import { clearComplete } from './clearComplete'
 import { render } from '../render'
-import { updateIdError } from './updateIdError'
-
-import { updateSaveError } from './updateSaveError'
 
 import {Actions, Views} from '../const'
 import { saveTodo } from './saveTodo';
@@ -21,11 +24,7 @@ export function updateData(action, state, data, messages) {
 
     switch (action) {
         case Actions.ADD_TODO: {
-            // pass render as an argument
-            //addTodo(data, state, render)
-
-            // make it here and pass it instead
-            debugger
+        
             const newTodo = {
                 id: null,
                 localId: state.currentId, // So we can update 'id' later
@@ -43,7 +42,6 @@ export function updateData(action, state, data, messages) {
             addTodo.remote(newTodo, state, messages)
             
             return newState
-            //break;
         }
 
         case Actions.UPDATE_ID_ERROR: {
@@ -57,25 +55,29 @@ export function updateData(action, state, data, messages) {
         return newState
    }
 
-
-        
         case Actions.RETRY_SAVE: {
-            //retrySave(state)
             retrySave.remote(state, messages)
             break;
         }
 
         case Actions.DELETE:{
             const newState = deleteTodo.local(data, state)
-
-            deleteTodo.remote(data, state, () => {
-                updateData(Actions.DELETE, state, data)
-            })
-
-            //deleteTodo.remote(data, state, messages)
+            deleteTodo.remote(data, state, messages)
 
             return newState
-            //break;
+        }
+
+        case Actions.UPDATE_NONE_ERROR:{
+            const newState = updateNoneError.local(state)
+
+            return newState
+        }
+
+        case Actions.RETRY_DELETE:{
+            const newState = retryDelete.local(data, state)
+            retryDelete.remote(data, state, messages)
+
+            return newState
         }
 
         case Actions.COMPLETE: {
@@ -106,7 +108,6 @@ export function updateData(action, state, data, messages) {
                 updateData(Actions.CLEAR_COMPLETE, state)
             })
             return newState
-            break;
         }
 
         case Actions.SHOW_ACTIVE: {
@@ -114,8 +115,6 @@ export function updateData(action, state, data, messages) {
             //render(state)
             const newState = Object.assign({}, state, {viewState: Views.SHOW_ACTIVE})
             return newState
-
-            break;
         }
         case Actions.SHOW_ALL: {
             //state.viewState = Views.SHOW_ALL
@@ -123,7 +122,6 @@ export function updateData(action, state, data, messages) {
 
             const newState = Object.assign({}, state, {viewState: Views.SHOW_ALL})
             return newState
-            break;
         }
         case Actions.SHOW_COMPLETED: {
             //state.viewState = Views.SHOW_COMPLETED
@@ -131,7 +129,6 @@ export function updateData(action, state, data, messages) {
 
             const newState = Object.assign({}, state, {viewState: Views.SHOW_COMPLETED})
             return newState
-            break;
         }
         
     } 

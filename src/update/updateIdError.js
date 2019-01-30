@@ -1,10 +1,6 @@
-import * as Ajax from '../ajax'
-const ajax = Ajax.ajax
 
 
-import {render} from '../render/index'
-import { Errors, DEFAULT_ERROR} from '../const'
-import { saveTodo } from './saveTodo';
+
 
 export const updateIdError= {
     local(state, data) {

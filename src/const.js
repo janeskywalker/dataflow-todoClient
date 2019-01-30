@@ -11,6 +11,10 @@ export const Actions = {
     SHOW_COMPLETED: 8,
     UPDATE_ID_ERROR: 9,
     UPDATE_SAVE_ERROR: 10,
+    UPDATE_NONE_ERROR: 11,
+    RETRY_DELETE: 12,
+
+
 }
 
 export const Views = {

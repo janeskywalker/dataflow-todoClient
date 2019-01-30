@@ -3,7 +3,7 @@ import { saveTodo } from './saveTodo'
 export const addTodo = {
     // add to the state locally
     local(newTodo, state) {
-        debugger
+    
         // push is stateful, map, reduce, filter are not
         // state.todos.push(newTodo)
         console.log('state.todos:', state.todos)
