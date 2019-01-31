@@ -8,8 +8,16 @@ import { updateNoneError} from './updateNoneError'
 import { retryDelete } from './retryDelete'
 
 import { complete } from './complete'
+import { retryComplete } from './retryComplete'
+
+
 import { uncomplete } from './uncomplete'
+import { retryUncomplete } from './retryUncomplete'
+
+
+
 import { clearComplete } from './clearComplete'
+import { retryClearComplete } from './retryClearComplete'
 import { render } from '../render'
 
 import {Actions, Views} from '../const'
@@ -21,6 +29,8 @@ export function updateData(action, state, data, messages) {
 
     console.log('action: ', action)
     console.log('state: ', state)
+    console.log('messages: ', messages)
+    
 
     switch (action) {
         case Actions.ADD_TODO: {
@@ -60,6 +70,11 @@ export function updateData(action, state, data, messages) {
             break;
         }
 
+
+
+
+
+
         case Actions.DELETE:{
             const newState = deleteTodo.local(data, state)
             deleteTodo.remote(data, state, messages)
@@ -80,35 +95,78 @@ export function updateData(action, state, data, messages) {
             return newState
         }
 
+
+
+
+
         case Actions.COMPLETE: {
-            //complete(id, state)
             const newState = complete.local(data, state)
-            complete.remote(data, state, () => {
-                updateData(Actions.COMPLETE, state, data)
-            })
+
+            
+            complete.remote(data, state, messages)
             
             return newState
             //break;
         }
 
+
+        case Actions.RETRY_COMPLETE:{
+            const newState = retryComplete.local(data, state)
+            retryComplete.remote(data, state, messages)
+
+            return newState
+        }
+
+
         case Actions.UNCOMPLETE: {
             const newState = uncomplete.local(data, state)
-            uncomplete.remote(data, state, () => {
-                updateData(Actions.UNCOMPLETE, state, data)
-            })
+
+            uncomplete.remote(data, state, messages)
 
             return newState
             //break;
         }
 
-        case Actions.CLEAR_COMPLETE: {
+        case Actions.RETRY_UNCOMPLETE:{
+            const newState = retryUncomplete.local(data, state)
+            retryUncomplete.remote(data, state, messages)
 
-            const newState = clearComplete.local(state, render)
-            clearComplete.remote(state, render, () => {
-                updateData(Actions.CLEAR_COMPLETE, state)
-            })
             return newState
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        case Actions.CLEAR_COMPLETE: {
+
+            const newState = clearComplete.local(state)
+            clearComplete.remote(state, messages)
+            return newState
+        }
+
+
+        case Actions.RETRY_CLEAR_COMPLETE: {
+            const newState = retryClearComplete.local(state)
+            retryClearComplete.remote(data, state, messages)
+            return newState
+            break;
+        }
+
+
+
+
+
+
+
+
 
         case Actions.SHOW_ACTIVE: {
             //state.viewState = Views.SHOW_ACTIVE

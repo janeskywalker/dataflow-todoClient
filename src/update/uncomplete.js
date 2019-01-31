@@ -3,7 +3,7 @@
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
-import { render } from '../render'
+import {Actions} from '../const'
 
 import { Errors, DEFAULT_ERROR } from '../const'
 
@@ -24,7 +24,7 @@ export const uncomplete = {
         return newState
     },
 
-    remote(data, state, retryUncomplete) {
+    remote(data, state, messages) {
         const id = data.item.id
 
         var promiseUncomplete = ajax({
@@ -36,23 +36,28 @@ export const uncomplete = {
                 promiseUncomplete.then((todos) => {
                     console.log(todos)
 
-                    state.error = DEFAULT_ERROR
-                    state.retryCount = 0
+                    // state.error = DEFAULT_ERROR
+                    // state.retryCount = 0
                     //render(state)
+
+                    messages(Actions.UPDATE_NONE_ERROR)
+
                 }).catch((err) => {
-                    console.log('error')
+                    console.log(err)
 
-                    state.error = {
-                        type: Errors.UNCOMPLETE,
-                        date: null
-                    }
-                    //render(state)
+                    // state.error = {
+                    //     type: Errors.UNCOMPLETE,
+                    //     date: null
+                    // }
+                    // //render(state)
 
-                    state.retryCount +=1
-                    console.log(state.retryCount)
+                    // state.retryCount +=1
+                    // console.log(state.retryCount)
 
-                    const waitTime = state.retryCount * 3000 
-                    setTimeout(retryUncomplete, waitTime)
+                    // const waitTime = state.retryCount * 3000 
+                    // setTimeout(retryUncomplete, waitTime)
+
+                    messages(Actions.RETRY_UNCOMPLETE, data)
                 })
     }
 }

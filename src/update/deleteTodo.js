@@ -53,6 +53,7 @@ export const deleteTodo = {
             .then(todos => {
                 console.log(todos)
 
+
                 // getting rid of the error message
                 state.error = DEFAULT_ERROR
                 state.retryCount = 0
@@ -61,8 +62,11 @@ export const deleteTodo = {
 
             //messages(Actions.UPDATE_NONE_ERROR, {error: DEFAULT_ERROR, retryCount: 0})
 
+            console.log('messages:', messages)
+            //debugger
             // only pass data that is necessary
             messages(Actions.UPDATE_NONE_ERROR)
+            
 
         }).catch((err) => {
             console.log('err:', err)

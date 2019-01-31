@@ -76,12 +76,15 @@ export function app(configObj) {
     state.elements.buttonShowActive.addEventListener('click', () => {
         state = updateData(Actions.SHOW_ACTIVE, state)
         render()
+    
     })
 
 
     state.elements.buttonClearComplete.addEventListener('click', (evt) => {
-        state = updateData(Actions.CLEAR_COMPLETE, state)
-        render(state)
+        // state = updateData(Actions.CLEAR_COMPLETE, state)
+        // render(state)
+        messages(Actions.CLEAR_COMPLETE)
+
     })
 
     state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {

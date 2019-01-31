@@ -9,6 +9,9 @@ import { render } from '../render'
 import { Errors, DEFAULT_ERROR} from '../const'
 
 
+import {Actions} from '../const'
+
+
 export const complete = {
     local(data, state) {
         // this still mutate state:
@@ -31,7 +34,7 @@ export const complete = {
         
     },
 
-    remote(data, state, retryComplete) {
+    remote(data, state, messages){
         const id = data.item.id
 
         const promiseComplete = ajax({
@@ -40,28 +43,33 @@ export const complete = {
             method: Ajax.PUT_METHOD,
             data: null,
         })
-
-        promiseComplete
-            .then(todos => {
+    
+        promiseComplete.then(todos => {
                 console.log(todos)
             //render(state)
+
+            console.log('completed succeeded')
+            console.log('messages:', messages)
+
+            messages(Actions.UPDATE_NONE_ERROR)
+
+
         }).catch((err) => {
-            console.log('error')
+            console.log('err:', err)
+
+            // show error widget
+            // state.error = {
+            //     type: Errors.COMPLETE,
+            //     data: null
+            // }
+
             //render(state)
 
-                // show error widget
-                state.error = {
-                    type: Errors.COMPLETE,
-                    data: null,
-                }
+            // call updateDate to retryDelete
+            // state.retryCount += 1
+            // const waitTime = 3000 * state.retryCount
 
-                render(state)
-
-                // call updateDate to retryDelete
-                state.retryCount += 1
-                const waitTime = 3000 * state.retryCount
-
-            // messages(Action.RETRY_COMPLETE, )
+            messages(Actions.RETRY_COMPLETE, data)
         })
 
     }

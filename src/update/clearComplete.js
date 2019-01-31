@@ -3,7 +3,11 @@
 import * as Ajax from '../ajax'
 const ajax = Ajax.ajax
 
-import { Errors, DEFAULT_ERROR } from '../const'
+import { Errors, DEFAULT_ERROR} from '../const'
+
+import {Actions} from '../const'
+
+
 
 import { render } from '../render'
 
@@ -28,7 +32,7 @@ export const clearComplete = {
         //render(state)
 
         const newTodos = state.todos.map((todo) => {
-            debugger
+            //debugger
             if(todo.completed === true) {
                 const newTodo = Object.assign({}, todo, {isDeleted: true})     
                 return newTodo
@@ -41,9 +45,10 @@ export const clearComplete = {
 
     },
 
-    remote(state, render, retryClearCompleted) {
-        const completedTodos = state.todos.filter(next => {
-            return next.completed === true
+    remote(state, messages) {
+
+        const completedTodos = state.todos.filter((next) =>{
+            return next.completed === true  
         })
         console.log('completedTodos', completedTodos)
 
@@ -80,21 +85,43 @@ export const clearComplete = {
                 // make a cc error widget to show
                 // call updateDate to retry cc
 
-                // show error widget
-                state.error = {
-                    type: Errors.CLEAR_COMPLETED,
-                    data: null,
-                }
+            // state.error = DEFAULT_ERROR
+            // state.retryCount = 0
 
-                render(state)
+            // render(state)
+
+            messages(Actions.UPDATE_NONE_ERROR)
+
+        }).catch((err) => {
 
                 // call updateDate to retryDelete
                 state.retryCount += 1
                 const waitTime = 3000 * state.retryCount
 
-                console.log('state.retryCount:', state.retryCount)
+            // make a cc error widget to show
+            // call updateDate to retry cc
 
-                setTimeout(retryClearCompleted, waitTime)
-            })
-    },
+            // show error widget
+            // state.error = {
+            //     type: Errors.CLEAR_COMPLETED,
+            //     data: null
+            // }
+
+            // render(state)
+
+            // call updateDate to retryDelete
+            // state.retryCount += 1
+            // const waitTime = 3000 * state.retryCount
+
+            // console.log('state.retryCount:', state.retryCount)
+
+            // setTimeout(retryClearCompleted, waitTime)
+
+            messages(Actions.RETRY_CLEAR_COMPLETE, idArr)
+
+        })
+
+
+    }
+    
 }

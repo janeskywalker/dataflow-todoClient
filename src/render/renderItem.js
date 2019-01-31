@@ -29,12 +29,14 @@ export function renderItem(item, state, messages) {
     checkbox.addEventListener('click', evt => {
         console.log('item: ', item)
         if (item.completed === false) {
-            state = updateData(Actions.COMPLETE, state, {item: item})
-            render(state)
+            // state = updateData(Actions.COMPLETE, state, {item: item})
+            // render(state)
+            messages(Actions.COMPLETE, {item: item})
         }
         else {
-            state = updateData(Actions.UNCOMPLETE, state, {item: item})
-            render(state)
+            // state = updateData(Actions.UNCOMPLETE, state, {item: item})
+            // render(state)
+            messages(Actions.UNCOMPLETE, {item: item})
         }
     })
 
