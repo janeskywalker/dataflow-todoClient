@@ -64,20 +64,23 @@ export function app(configObj) {
 
 
     state.elements.buttonCompleted.addEventListener('click',() => {
-        state = updateData(Actions.SHOW_COMPLETED, state)
-        render(state)
+        // state = updateData(Actions.SHOW_COMPLETED, state)
+        // render(state)
+        messages(Actions.SHOW_COMPLETED)
     })
 
     state.elements.buttonShowAll.addEventListener('click',() => {
-        state = updateData(Actions.SHOW_ALL, state)
-        render(state)
+        // state = updateData(Actions.SHOW_ALL, state)
+        // render(state)
+        messages(Actions.SHOW_ALL)
     })
 
     state.elements.buttonShowActive.addEventListener('click', () => {
-        state = updateData(Actions.SHOW_ACTIVE, state)
-        render()
-    
+        // state = updateData(Actions.SHOW_ACTIVE, state)
+        // render()
+        messages(Actions.SHOW_ACTIVE)
     })
+
 
 
     state.elements.buttonClearComplete.addEventListener('click', (evt) => {

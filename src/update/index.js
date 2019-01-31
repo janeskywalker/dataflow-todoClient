@@ -75,6 +75,7 @@ export function updateData(action, state, data, messages) {
 
 
 
+
         case Actions.DELETE:{
             const newState = deleteTodo.local(data, state)
             deleteTodo.remote(data, state, messages)
@@ -99,6 +100,8 @@ export function updateData(action, state, data, messages) {
 
 
 
+
+
         case Actions.COMPLETE: {
             const newState = complete.local(data, state)
 
@@ -116,6 +119,13 @@ export function updateData(action, state, data, messages) {
 
             return newState
         }
+
+
+        
+
+
+
+
 
 
         case Actions.UNCOMPLETE: {
@@ -167,6 +177,8 @@ export function updateData(action, state, data, messages) {
 
 
 
+
+        
 
         case Actions.SHOW_ACTIVE: {
             //state.viewState = Views.SHOW_ACTIVE
