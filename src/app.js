@@ -10,11 +10,15 @@ import {render} from './render'
 import {DEFAULT_ERROR, Actions, Selectors, Views} from './const'
 
 // import {input, buttonCompleted, buttonShowAll, buttonShowActive, 
-//     buttonClearComplete, saveError} from './elements'
+//     buttonClearComplete, saveError} from './elements'on
 
 import {getElements} from './elements'
 
 
+
+
+const onSelector = require('onselector').onSelector
+console.log('onSelector:', onSelector)
 
 
 
