@@ -16,6 +16,11 @@ import {getElements} from './elements'
 
 
 
+const onSelector = require('onselector').onSelector
+console.log('onSelector:', onSelector)
+
+ 
+
 
 // app should be the only thing that knows about updateDate and render
 
@@ -51,51 +56,82 @@ export function app(configObj) {
 
     // Event
     // For every event there is an Action (99% true)
-    state.elements.input.addEventListener('keypress',(evt) => {
-        // debugger
+    
+
+    onSelector('keypress', Selectors.INPUT, (evt) => {
 
         if (evt.key == 'Enter') {
             const newItem = evt.target.value
-            // if (newItem !== '')
-
             messages(Actions.ADD_TODO, {item: newItem})
         }
+        
     })
 
 
-    state.elements.buttonCompleted.addEventListener('click',() => {
+    
+
+
+    onSelector('click', Selectors.BUTTON_COMPLETED, () => {
         // state = updateData(Actions.SHOW_COMPLETED, state)
         // render(state)
         messages(Actions.SHOW_COMPLETED)
     })
 
-    state.elements.buttonShowAll.addEventListener('click',() => {
+
+
+
+
+    onSelector('click', Selectors.BUTTON_SHOW_ALL, () => {
         // state = updateData(Actions.SHOW_ALL, state)
         // render(state)
         messages(Actions.SHOW_ALL)
     })
 
-    state.elements.buttonShowActive.addEventListener('click', () => {
-        // state = updateData(Actions.SHOW_ACTIVE, state)
-        // render()
+
+
+
+
+
+
+
+
+    onSelector('click', Selectors.BUTTON_SHOW_ACTIVE, () => {
+        // state = updateData(Actions.SHOW_ALL, state)
+        // render(state)
         messages(Actions.SHOW_ACTIVE)
     })
 
 
 
-    state.elements.buttonClearComplete.addEventListener('click', (evt) => {
-        // state = updateData(Actions.CLEAR_COMPLETE, state)
+
+
+
+
+    onSelector('click', Selectors.BUTTON_CLEAR_COMPLETE, () => {
+        // state = updateData(Actions.SHOW_ALL, state)
         // render(state)
         messages(Actions.CLEAR_COMPLETE)
-
     })
 
-    state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
-        console.log('newthing:', state.error.data)
-        // shall pass state.error.data only?
-        //updateData(Actions.RETRY_SAVE, state)
+
+
+
+
+
+    // state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
+    //     //console.log('newthing:', state.error.data)
+    //     // shall pass state.error.data only?
+    //     //updateData(Actions.RETRY_SAVE, state)
+    //     messages(Actions.RETRY_SAVE)
+    // })
+
+
+    onSelector('click', Selectors.CONFIRM_BUTTON, (evt) => {
+        //console.log('newthing:', state.error.data)
         messages(Actions.RETRY_SAVE)
     })
+
+
 
 
 
