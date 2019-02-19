@@ -46,6 +46,8 @@ export const Selectors = {
     CLEAR_COMPLETED_ERROR: '#clear-completed-error',
     COMPLETE_ERROR: '#complete-error',
     UNCOMPLETE_ERROR: '#uncomplete-error',
+    DELETE_BUTTON: '.delete-btn',
+    CHECKBOX:'.checkbox'
 }
 
 export const ACTIVE_CLASS = 'active'

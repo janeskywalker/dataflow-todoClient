@@ -20,6 +20,8 @@ export const deleteTodo = {
         console.log('data:', data)
         const newTodos = state.todos.filter((next) => next !== data.item)
 
+        console.log('newTodos:', newTodos)
+
         const newState = Object.assign({}, state, {
             todos: newTodos
         })
@@ -62,10 +64,10 @@ export const deleteTodo = {
 
             //messages(Actions.UPDATE_NONE_ERROR, {error: DEFAULT_ERROR, retryCount: 0})
 
-            console.log('messages:', messages)
+            //console.log('messages:', messages)
             //debugger
             // only pass data that is necessary
-            messages(Actions.UPDATE_NONE_ERROR)
+            //messages(Actions.UPDATE_NONE_ERROR)
             
 
         }).catch((err) => {
@@ -95,7 +97,9 @@ export const deleteTodo = {
             // )
 
             // only pass data that is necessary
-            messages(Actions.RETRY_DELETE, data)
+            //messages(Actions.RETRY_DELETE, data)
+
+
         })
 
     }

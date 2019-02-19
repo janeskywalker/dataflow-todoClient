@@ -17,11 +17,8 @@ import {getElements} from './elements'
 
 
 const onSelector = require('onselector').onSelector
-console.log('onSelector:', onSelector)
 
  
-
-
 // app should be the only thing that knows about updateDate and render
 
 export function app(configObj) {
@@ -37,7 +34,6 @@ export function app(configObj) {
         retryCount: 0,
         elements: null,
         viewState: Views.SHOW_ALL
-        //viewState: 'show_all' | 'show_completed' | 'show_active'
         //retryPolicy: configObj.retryPolicy
     }
 
@@ -54,9 +50,66 @@ export function app(configObj) {
     }
 
 
-    // Event
-    // For every event there is an Action (99% true)
     
+    onSelector('click', Selectors.DELETE_BUTTON, (evt) => {
+        //messages(Actions.DELETE, data)
+        // how to know which item to delete --> localId
+        console.log('evt', evt)
+        
+        const li = recursiveMatchLi(evt.target, Selectors.DELETE_BUTTON).parentNode
+        console.log('li:', li)
+
+        const localIdToDelete = li.dataset.localId
+        console.log('localIdToDelete:', localIdToDelete)
+
+        const itemToDeleteArray = state.todos.filter((todo) => todo.localId === parseInt(localIdToDelete))    
+        
+        const itemToDelete = itemToDeleteArray[0]
+        console.log('itemToDelete:', itemToDelete)
+
+        messages(Actions.DELETE, {item:itemToDelete})
+    })
+
+    onSelector('click', Selectors.CHECKBOX, (evt) => {
+
+        console.log('evt', evt)
+
+        const li = recursiveMatchLi(evt.target, Selectors.CHECKBOX).parentNode
+        console.log('li:', li)
+
+        const localIdToComplete = li.dataset.localId
+        console.log('localIdToComplete:', localIdToComplete)
+
+        const itemToCompleteArray = state.todos.filter((todo) => todo.localId === parseInt(localIdToComplete))  
+        console.log('itemToCompleteArray:', itemToCompleteArray)  
+        
+        const itemToComplete = itemToCompleteArray[0]
+        console.log('itemToComplete:', itemToComplete)
+
+        if (itemToComplete.completed === false) {
+            messages(Actions.COMPLETE, {item: itemToComplete})
+        } else {
+            messages(Actions.UNCOMPLETE, {item: itemToComplete})
+        }
+
+        
+    })
+
+    function recursiveMatchLi(el, selector) {
+         // typeof can tell you 'string', 'number', 'boolean', 'object', 'undefined',
+        //'symbol', 'function'
+        if (typeof el.matches === 'function' && el.matches(selector)) {
+            return el
+        } else if (el.parentNode) {
+            return recursiveMatch(el.parentNode, selector)
+        } else {
+            return null
+        }
+
+    }
+
+   
+
 
     onSelector('keypress', Selectors.INPUT, (evt) => {
 

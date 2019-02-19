@@ -29,8 +29,6 @@ export function updateData(action, state, data, messages) {
 
     console.log('action: ', action)
     console.log('state: ', state)
-    console.log('messages: ', messages)
-    
 
     switch (action) {
         case Actions.ADD_TODO: {
