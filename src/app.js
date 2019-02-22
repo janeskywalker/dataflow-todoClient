@@ -44,7 +44,7 @@ export function app(configObj) {
     // All action flow through here
     // everywhere updateData is called, replace it with messsages
     function messages(action, data) {
-        console.log('calling messages')
+        console.log('calling messages') 
         state = updateData(action, state, data, messages)
         render(state, messages)
     }
@@ -198,9 +198,32 @@ export function app(configObj) {
     })
 
     promiseGet.then((todos) => {
-        console.log(todos)
-        state.todos = todos
-        render(state)
+
+        messages(Actions.INITIAL_LOADING, todos)
+
+        // console.log('todos:', todos)
+
+        // var localStartingId = 0
+        // function newLocalId() {
+        //     return localStartingId += 1
+        // }
+        
+        // todos.forEach((todo) => {
+        //     console.log('todo:', todo)
+        //     todo.localId = newLocalId()
+        // })
+
+        // console.log('todos:', todos)
+
+        // state.todos = todos
+
+        // state.currentId = state.todos.length + 2
+        // console.log('state.currentId:', state.currentId)
+
+        // render(state)
+        
+
+
     }).catch((err) => {
         console.log('error: ', err)
     })

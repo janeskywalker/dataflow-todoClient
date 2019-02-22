@@ -15,7 +15,8 @@ export const Actions = {
     RETRY_DELETE: 12,
     RETRY_COMPLETE: 13,
     RETRY_UNCOMPLETE: 14,
-    RETRY_CLEAR_COMPLETE: 15
+    RETRY_CLEAR_COMPLETE: 15,
+    INITIAL_LOADING: 16,
 }
 
 export const Views = {

@@ -3,7 +3,6 @@ import { saveTodo } from './saveTodo'
 export const addTodo = {
     // add to the state locally
     local(newTodo, state) {
-    
         // push is stateful, map, reduce, filter are not
         // state.todos.push(newTodo)
         console.log('state.todos:', state.todos)
@@ -12,15 +11,15 @@ export const addTodo = {
 
         // create a new array that has all old todos and the new Todo
         // spread operator
-        const newTodos = [ ...state.todos, newTodo ]
+        const newTodos = [...state.todos, newTodo]
 
         // or do this to copy/merge an object
         const newState = Object.assign({}, state, {
-            todos: newTodos
+            todos: newTodos,
         })
         //console.log('oldState: ', state)
         console.log('newState: ', newState)
-        
+
         return newState
         //render(state)
     },
@@ -28,8 +27,7 @@ export const addTodo = {
     // save it to the server
     // call post
     remote(newTodo, state, messages) {
-
-        saveTodo(newTodo, state, messages).then((state) => {
+        saveTodo(newTodo, state, messages).then(state => {
             //render(state)
         })
     },

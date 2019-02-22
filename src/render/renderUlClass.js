@@ -1,7 +1,5 @@
-
 //import {ul} from './elements'
-import { ACTIVE_CLASS, COMPLETED_CLASS, Views} from '../const';
-
+import { ACTIVE_CLASS, COMPLETED_CLASS, Views } from '../const'
 
 // export function showCompletedItem(state){
 //     if(state.elements.ul.classList.contains(ACTIVE_CLASS)){
@@ -24,37 +22,30 @@ import { ACTIVE_CLASS, COMPLETED_CLASS, Views} from '../const';
 //     ul.classList.remove(ACTIVE_CLASS)
 // }
 
-
-
-
-
 // toggleViewState
-export function renderUlClass(state){
+export function renderUlClass(state) {
     switch (state.viewState) {
-        case  Views.SHOW_ACTIVE: {
+        case Views.SHOW_ACTIVE: {
             const ul = state.elements.ul
-            if (ul.classList.contains(COMPLETED_CLASS)){
+            if (ul.classList.contains(COMPLETED_CLASS)) {
                 ul.classList.remove(COMPLETED_CLASS)
             }
             ul.classList.add(ACTIVE_CLASS)
-            break;
+            break
         }
-        case  Views.SHOW_ALL: {
+        case Views.SHOW_ALL: {
             const ul = state.elements.ul
             ul.classList.remove(COMPLETED_CLASS)
             ul.classList.remove(ACTIVE_CLASS)
-            break;
+            break
         }
         case Views.SHOW_COMPLETED: {
             const ul = state.elements.ul
-            if(ul.classList.contains(ACTIVE_CLASS)){
+            if (ul.classList.contains(ACTIVE_CLASS)) {
                 ul.classList.remove(ACTIVE_CLASS)
             }
             ul.classList.add(COMPLETED_CLASS)
-            break;
+            break
         }
     }
 }
-
-
-
