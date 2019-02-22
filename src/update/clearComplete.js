@@ -68,25 +68,6 @@ export const clearComplete = {
 
         promiseClearComplete
             .then(todos => {
-                console.log('after CC todos', todos)
-
-                state.error = DEFAULT_ERROR
-                state.retryCount = 0
-
-                render(state)
-            })
-            .catch(err => {
-                console.log('cc error:', err)
-                //renderError()
-
-                // make a cc error widget to show
-                // call updateDate to retry cc
-
-                // state.error = DEFAULT_ERROR
-                // state.retryCount = 0
-
-                // render(state)
-
                 messages(Actions.UPDATE_NONE_ERROR)
             })
             .catch(err => {
