@@ -5,15 +5,9 @@ import {updateData} from './update'
 
 import {render} from './render'
 
-//import {showCompletedItem, showActiveItem, showAllItem} from './show.js'
-
 import {DEFAULT_ERROR, Actions, Selectors, Views} from './const'
 
-// import {input, buttonCompleted, buttonShowAll, buttonShowActive, 
-//     buttonClearComplete, saveError} from './elements'on
-
 import {getElements} from './elements'
-
 
 
 const onSelector = require('onselector').onSelector
@@ -42,7 +36,6 @@ export function app(configObj) {
     console.log('state:', state)
 
     // All action flow through here
-    // everywhere updateData is called, replace it with messsages
     function messages(action, data) {
         console.log('calling messages') 
         state = updateData(action, state, data, messages)
@@ -52,7 +45,6 @@ export function app(configObj) {
 
     
     onSelector('click', Selectors.DELETE_BUTTON, (evt) => {
-        //messages(Actions.DELETE, data)
         // how to know which item to delete --> localId
         console.log('evt', evt)
         
@@ -90,9 +82,7 @@ export function app(configObj) {
             messages(Actions.COMPLETE, {item: itemToComplete})
         } else {
             messages(Actions.UNCOMPLETE, {item: itemToComplete})
-        }
-
-        
+        }       
     })
 
     function recursiveMatchLi(el, selector) {
@@ -108,8 +98,6 @@ export function app(configObj) {
 
     }
 
-   
-
 
     onSelector('keypress', Selectors.INPUT, (evt) => {
 
@@ -122,8 +110,6 @@ export function app(configObj) {
 
 
     
-
-
     onSelector('click', Selectors.BUTTON_COMPLETED, () => {
         // state = updateData(Actions.SHOW_COMPLETED, state)
         // render(state)
@@ -143,18 +129,11 @@ export function app(configObj) {
 
 
 
-
-
-
-
-
     onSelector('click', Selectors.BUTTON_SHOW_ACTIVE, () => {
         // state = updateData(Actions.SHOW_ALL, state)
         // render(state)
         messages(Actions.SHOW_ACTIVE)
     })
-
-
 
 
 
@@ -168,17 +147,7 @@ export function app(configObj) {
 
 
 
-
-
-
-    // state.elements.saveError.querySelector(Selectors.CONFIRM_BUTTON).addEventListener('click', (evt) => {
-    //     //console.log('newthing:', state.error.data)
-    //     // shall pass state.error.data only?
-    //     //updateData(Actions.RETRY_SAVE, state)
-    //     messages(Actions.RETRY_SAVE)
-    // })
-
-
+    
     onSelector('click', Selectors.CONFIRM_BUTTON, (evt) => {
         //console.log('newthing:', state.error.data)
         messages(Actions.RETRY_SAVE)
@@ -200,29 +169,6 @@ export function app(configObj) {
     promiseGet.then((todos) => {
 
         messages(Actions.INITIAL_LOADING, todos)
-
-        // console.log('todos:', todos)
-
-        // var localStartingId = 0
-        // function newLocalId() {
-        //     return localStartingId += 1
-        // }
-        
-        // todos.forEach((todo) => {
-        //     console.log('todo:', todo)
-        //     todo.localId = newLocalId()
-        // })
-
-        // console.log('todos:', todos)
-
-        // state.todos = todos
-
-        // state.currentId = state.todos.length + 2
-        // console.log('state.currentId:', state.currentId)
-
-        // render(state)
-        
-
 
     }).catch((err) => {
         console.log('error: ', err)

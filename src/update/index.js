@@ -29,9 +29,7 @@ export function updateData(action, state, data, messages) {
 
     switch (action) {
         case Actions.INITIAL_LOADING: {
-            //const newState =
             const newState = initialLoading.local(state, data)
-            //return newState
             return newState
         }
 
