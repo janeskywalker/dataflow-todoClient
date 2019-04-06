@@ -72,8 +72,8 @@ export const clearComplete = {
             })
             .catch(err => {
                 // call updateDate to retryDelete
-                state.retryCount += 1
-                const waitTime = 3000 * state.retryCount
+                // state.retryCount += 1
+                // const waitTime = 3000 * state.retryCount
 
                 // make a cc error widget to show
                 // call updateDate to retry cc

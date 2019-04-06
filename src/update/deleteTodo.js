@@ -51,8 +51,8 @@ export const deleteTodo = {
                 console.log(todos)
 
                 // getting rid of the error message
-                state.error = DEFAULT_ERROR
-                state.retryCount = 0
+                // state.error = DEFAULT_ERROR
+                // state.retryCount = 0
 
                 //render(state)
 

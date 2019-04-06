@@ -43,6 +43,36 @@ export function app(configObj) {
     }
 
 
+
+
+
+
+    onSelector('keypress', Selectors.INPUT, (evt) => {
+
+        if (evt.key == 'Enter') {
+            const newItem = evt.target.value
+            messages(Actions.ADD_TODO, {item: newItem})
+        }
+        
+    })
+
+
+
+
+    
+    onSelector('click', Selectors.CONFIRM_BUTTON, (evt) => {
+        //console.log('newthing:', state.error.data)
+        messages(Actions.RETRY_SAVE)
+    })
+
+
+
+
+
+
+
+
+
     
     onSelector('click', Selectors.DELETE_BUTTON, (evt) => {
         // how to know which item to delete --> localId
@@ -61,6 +91,23 @@ export function app(configObj) {
 
         messages(Actions.DELETE, {item:itemToDelete})
     })
+
+    
+    function recursiveMatchLi(el, selector) {
+        // typeof can tell you 'string', 'number', 'boolean', 'object', 'undefined',
+       //'symbol', 'function'
+       if (typeof el.matches === 'function' && el.matches(selector)) {
+           return el
+       } else if (el.parentNode) {
+           return recursiveMatch(el.parentNode, selector)
+       } else {
+           return null
+       }
+
+   }
+
+
+
 
     onSelector('click', Selectors.CHECKBOX, (evt) => {
 
@@ -85,28 +132,12 @@ export function app(configObj) {
         }       
     })
 
-    function recursiveMatchLi(el, selector) {
-         // typeof can tell you 'string', 'number', 'boolean', 'object', 'undefined',
-        //'symbol', 'function'
-        if (typeof el.matches === 'function' && el.matches(selector)) {
-            return el
-        } else if (el.parentNode) {
-            return recursiveMatch(el.parentNode, selector)
-        } else {
-            return null
-        }
-
-    }
 
 
-    onSelector('keypress', Selectors.INPUT, (evt) => {
 
-        if (evt.key == 'Enter') {
-            const newItem = evt.target.value
-            messages(Actions.ADD_TODO, {item: newItem})
-        }
-        
-    })
+
+
+
 
 
     
@@ -144,15 +175,6 @@ export function app(configObj) {
         // render(state)
         messages(Actions.CLEAR_COMPLETE)
     })
-
-
-
-    
-    onSelector('click', Selectors.CONFIRM_BUTTON, (evt) => {
-        //console.log('newthing:', state.error.data)
-        messages(Actions.RETRY_SAVE)
-    })
-
 
 
 
