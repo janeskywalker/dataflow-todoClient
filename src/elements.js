@@ -1,9 +1,6 @@
-
-import {Selectors} from './const'
-
+import { Selectors } from './const'
 
 export function getElements(rootSelector) {
-
     const root = document.querySelector(rootSelector)
 
     const ul = root.querySelector(Selectors.ITEM_LIST)
@@ -16,7 +13,9 @@ export function getElements(rootSelector) {
 
     const buttonShowActive = root.querySelector(Selectors.BUTTON_SHOW_ACTIVE)
 
-    const buttonClearComplete = root.querySelector(Selectors.BUTTON_CLEAR_COMPLETE)
+    const buttonClearComplete = root.querySelector(
+        Selectors.BUTTON_CLEAR_COMPLETE
+    )
 
     const saveError = root.querySelector(Selectors.SAVE_ERROR)
 
@@ -24,14 +23,16 @@ export function getElements(rootSelector) {
 
     const countItemLeft = root.querySelector(Selectors.COUNT_ITEM_LEFT)
 
-    const clearCompletedError = root.querySelector(Selectors.CLEAR_COMPLETED_ERROR)
+    const clearCompletedError = root.querySelector(
+        Selectors.CLEAR_COMPLETED_ERROR
+    )
 
     const completeError = root.querySelector(Selectors.COMPLETE_ERROR)
 
     const uncompleteError = root.querySelector(Selectors.UNCOMPLETE_ERROR)
 
     return {
-        ul, 
+        ul,
         input,
         buttonCompleted,
         buttonShowAll,
@@ -39,11 +40,9 @@ export function getElements(rootSelector) {
         buttonClearComplete,
         saveError,
         deleteError,
-        countItemLeft, 
+        countItemLeft,
         clearCompletedError,
         completeError,
-        uncompleteError
+        uncompleteError,
     }
-
 }
-

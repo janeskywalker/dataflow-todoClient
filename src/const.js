@@ -27,17 +27,17 @@ export const Views = {
 
 export const Errors = {
     SAVE: 'saveError',
-    DELETE: 'deleteError', 
-    COMPLETE: 'completeError', 
+    DELETE: 'deleteError',
+    COMPLETE: 'completeError',
     UNCOMPLETE: 'uncompleteError',
-    CLEAR_COMPLETED: 'clearCompleteError'
+    CLEAR_COMPLETED: 'clearCompleteError',
 }
 
 export const Selectors = {
     ITEM_LIST: '#item-list',
-    INPUT: '#item-input', 
-    BUTTON_COMPLETED: '#button-completed', 
-    BUTTON_SHOW_ALL: '#button-show-all', 
+    INPUT: '#item-input',
+    BUTTON_COMPLETED: '#button-completed',
+    BUTTON_SHOW_ALL: '#button-show-all',
     BUTTON_SHOW_ACTIVE: '#button-show-active',
     BUTTON_CLEAR_COMPLETE: '#button-clear-completed',
     SAVE_ERROR: '#save-error',
@@ -48,13 +48,12 @@ export const Selectors = {
     COMPLETE_ERROR: '#complete-error',
     UNCOMPLETE_ERROR: '#uncomplete-error',
     DELETE_BUTTON: '.delete-btn',
-    CHECKBOX:'.checkbox'
+    CHECKBOX: '.checkbox',
 }
 
 export const ACTIVE_CLASS = 'active'
 
 export const COMPLETED_CLASS = 'completed'
-
 
 // Object.freeze changes an object so it can't be changed
 export const DEFAULT_ERROR = Object.freeze({
@@ -62,16 +61,9 @@ export const DEFAULT_ERROR = Object.freeze({
     data: null,
 })
 
-
-
 // You don't export or import data only to mutate (change) it.
 // export const state = {
 //     error: DEFAULT_ERROR,
 //     todos: [],
 //     retryCount: 0,
 // }
-
-
-
-
-

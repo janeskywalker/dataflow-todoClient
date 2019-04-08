@@ -134,7 +134,6 @@ export function updateData(action, state, data, messages) {
             const newState = retryClearComplete.local(state)
             retryClearComplete.remote(data, state, messages)
             return newState
-            break
         }
 
         case Actions.SHOW_ACTIVE: {

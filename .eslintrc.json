@@ -2,29 +2,9 @@
 
     "extends": "eslint:recommended",
 
-
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
 
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-
-        "quotes": [
-            "error",
-            "double"
-        ],
-
-        "semi": [
-            "error",
-            "always"
-        ],
-
-        "no-console": false,
+        "no-console": 1,
 
         "no-unused-vars": [
             "warn",

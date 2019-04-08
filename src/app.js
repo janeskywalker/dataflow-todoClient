@@ -1,18 +1,16 @@
 import * as Ajax from './ajax'
 const ajax = Ajax.ajax
 
-import {updateData} from './update'
+import { updateData } from './update'
 
-import {render} from './render'
+import { render } from './render'
 
-import {DEFAULT_ERROR, Actions, Selectors, Views} from './const'
+import { DEFAULT_ERROR, Actions, Selectors, Views } from './const'
 
-import {getElements} from './elements'
-
+import { getElements } from './elements'
 
 const onSelector = require('onselector').onSelector
 
- 
 // app should be the only thing that knows about updateDate and render
 
 export function app(configObj) {
@@ -20,14 +18,14 @@ export function app(configObj) {
     // Initial State
     let state = {
         // nextlocalId -- state keeps track on everything(incl. this onelocalId)
-        currentId: 0, 
+        currentId: 0,
         url: configObj.url,
         rootSelector: configObj.rootSelector,
         error: DEFAULT_ERROR,
         todos: [],
         retryCount: 0,
         elements: null,
-        viewState: Views.SHOW_ALL
+        viewState: Views.SHOW_ALL,
         //retryPolicy: configObj.retryPolicy
     }
 
@@ -37,80 +35,57 @@ export function app(configObj) {
 
     // All action flow through here
     function messages(action, data) {
-        console.log('calling messages') 
+        console.log('calling messages')
         state = updateData(action, state, data, messages)
         render(state, messages)
     }
 
-
-
-
-
-
-    onSelector('keypress', Selectors.INPUT, (evt) => {
-
+    onSelector('keypress', Selectors.INPUT, evt => {
         if (evt.key == 'Enter') {
             const newItem = evt.target.value
-            messages(Actions.ADD_TODO, {item: newItem})
+            messages(Actions.ADD_TODO, { item: newItem })
         }
-        
     })
 
-
-
-
-    
-    onSelector('click', Selectors.CONFIRM_BUTTON, (evt) => {
+    onSelector('click', Selectors.CONFIRM_BUTTON, evt => {
         //console.log('newthing:', state.error.data)
         messages(Actions.RETRY_SAVE)
     })
 
-
-
-
-
-
-
-
-
-    
-    onSelector('click', Selectors.DELETE_BUTTON, (evt) => {
+    onSelector('click', Selectors.DELETE_BUTTON, evt => {
         // how to know which item to delete --> localId
         console.log('evt', evt)
-        
-        const li = recursiveMatchLi(evt.target, Selectors.DELETE_BUTTON).parentNode
+
+        const li = recursiveMatchLi(evt.target, Selectors.DELETE_BUTTON)
+            .parentNode
         console.log('li:', li)
 
         const localIdToDelete = li.dataset.localId
         console.log('localIdToDelete:', localIdToDelete)
 
-        const itemToDeleteArray = state.todos.filter((todo) => todo.localId === parseInt(localIdToDelete))    
-        
+        const itemToDeleteArray = state.todos.filter(
+            todo => todo.localId === parseInt(localIdToDelete)
+        )
+
         const itemToDelete = itemToDeleteArray[0]
         console.log('itemToDelete:', itemToDelete)
 
-        messages(Actions.DELETE, {item:itemToDelete})
+        messages(Actions.DELETE, { item: itemToDelete })
     })
 
-    
     function recursiveMatchLi(el, selector) {
         // typeof can tell you 'string', 'number', 'boolean', 'object', 'undefined',
-       //'symbol', 'function'
-       if (typeof el.matches === 'function' && el.matches(selector)) {
-           return el
-       } else if (el.parentNode) {
-           return recursiveMatch(el.parentNode, selector)
-       } else {
-           return null
-       }
+        //'symbol', 'function'
+        if (typeof el.matches === 'function' && el.matches(selector)) {
+            return el
+        } else if (el.parentNode) {
+            return recursiveMatch(el.parentNode, selector)
+        } else {
+            return null
+        }
+    }
 
-   }
-
-
-
-
-    onSelector('click', Selectors.CHECKBOX, (evt) => {
-
+    onSelector('click', Selectors.CHECKBOX, evt => {
         console.log('evt', evt)
 
         const li = recursiveMatchLi(evt.target, Selectors.CHECKBOX).parentNode
@@ -119,37 +94,26 @@ export function app(configObj) {
         const localIdToComplete = li.dataset.localId
         console.log('localIdToComplete:', localIdToComplete)
 
-        const itemToCompleteArray = state.todos.filter((todo) => todo.localId === parseInt(localIdToComplete))  
-        console.log('itemToCompleteArray:', itemToCompleteArray)  
-        
+        const itemToCompleteArray = state.todos.filter(
+            todo => todo.localId === parseInt(localIdToComplete)
+        )
+        console.log('itemToCompleteArray:', itemToCompleteArray)
+
         const itemToComplete = itemToCompleteArray[0]
         console.log('itemToComplete:', itemToComplete)
 
         if (itemToComplete.completed === false) {
-            messages(Actions.COMPLETE, {item: itemToComplete})
+            messages(Actions.COMPLETE, { item: itemToComplete })
         } else {
-            messages(Actions.UNCOMPLETE, {item: itemToComplete})
-        }       
+            messages(Actions.UNCOMPLETE, { item: itemToComplete })
+        }
     })
 
-
-
-
-
-
-
-
-
-    
     onSelector('click', Selectors.BUTTON_COMPLETED, () => {
         // state = updateData(Actions.SHOW_COMPLETED, state)
         // render(state)
         messages(Actions.SHOW_COMPLETED)
     })
-
-
-
-
 
     onSelector('click', Selectors.BUTTON_SHOW_ALL, () => {
         // state = updateData(Actions.SHOW_ALL, state)
@@ -157,18 +121,11 @@ export function app(configObj) {
         messages(Actions.SHOW_ALL)
     })
 
-
-
-
     onSelector('click', Selectors.BUTTON_SHOW_ACTIVE, () => {
         // state = updateData(Actions.SHOW_ALL, state)
         // render(state)
         messages(Actions.SHOW_ACTIVE)
     })
-
-
-
-
 
     onSelector('click', Selectors.BUTTON_CLEAR_COMPLETE, () => {
         // state = updateData(Actions.SHOW_ALL, state)
@@ -176,28 +133,19 @@ export function app(configObj) {
         messages(Actions.CLEAR_COMPLETE)
     })
 
-
-
-
-
-    // call GET 
+    // call GET
     // Getting initial data
     const promiseGet = ajax({
         url: 'http://localhost:4000/api/todos',
         method: Ajax.GET_METHOD,
-        data: null
+        data: null,
     })
 
-    promiseGet.then((todos) => {
-
-        messages(Actions.INITIAL_LOADING, todos)
-
-    }).catch((err) => {
-        console.log('error: ', err)
-    })
-
+    promiseGet
+        .then(todos => {
+            messages(Actions.INITIAL_LOADING, todos)
+        })
+        .catch(err => {
+            console.log('error: ', err)
+        })
 }
-
-
-
-
